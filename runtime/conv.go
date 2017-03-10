@@ -1,5 +1,5 @@
 package runtime
 
 func Fstring(s string) *String {
-	return &String{value: s}
+	return &String{s, objectBase()}
 }

@@ -8,5 +8,5 @@ type String struct {
 }
 
 func (s *String) Description() string {
-    return fmt.Sprintf("%#v", s.value)
+	return fmt.Sprintf("%#v", s.value)
 }

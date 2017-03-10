@@ -2,6 +2,8 @@ package runtime
 
 type Object interface {
 
+	// PROPERTIES
+
 	// fetch a property and its owner. if this is a computed property
 	// or lazy-evaluated value, it is NOT evaluated
 	Property(name string) (owner Object, value PropertyValue)
@@ -16,6 +18,10 @@ type Object interface {
 	// fetch the object's own property, always yielding an Object by
 	// evaluating computed properties
 	PropertyOwnComputed(name string) Object
+
+	// slice of property names, optionally including inherited
+	Properties() []string
+	PropertiesOwn() []string
 
 	// true if the object has a property by the given name
 	Has(name string) bool
@@ -35,9 +41,27 @@ type Object interface {
 	Delete(name string)
 	DeleteOverwrite(name string)
 
+	// INDICES
+
 	// fetch and evaluate or set the value at the given index
 	GetIndex(index Object) Object
 	SetIndex(index Object, value Object)
+
+	// INHERITANCE
+
+    // fetch parent objects
+	Parents() []Object
+
+    // add parent object
+	AddParent(p Object)
+
+    // remove parent object
+	RemoveParent(p Object)
+
+    // object has this parent
+	HasParent(p Object) bool
+
+	// OTHER
 
 	// call the object with the given call info, returning an object
 	Call(c Call) Object

@@ -47,6 +47,37 @@ func (obj *genericObject) PropertyOwnComputed(name string) Object {
 	return computed(val)
 }
 
+// all properties
+func (obj *genericObject) Properties() []string {
+	props := obj.PropertiesOwn()
+	for _, parent := range obj.isa {
+		props = append(props, parent.PropertiesOwn()...)
+	}
+	seen := make(map[string]bool, len(props))
+	uniq := make([]string, len(props))
+	i := 0
+	for _, name := range props {
+		if seen[name] {
+			continue
+		}
+		seen[name] = true
+		uniq[i] = name
+		i++
+	}
+	return uniq[:i]
+}
+
+// own properties
+func (obj *genericObject) PropertiesOwn() []string {
+	props := make([]string, len(obj.properties))
+	i := 0
+	for name := range obj.properties {
+		props[i] = name
+		i++
+	}
+	return props
+}
+
 // true if the object has a property by the given name
 func (obj *genericObject) Has(name string) bool {
 	_, val := obj.Property(name)
@@ -113,6 +144,23 @@ func (obj *genericObject) SetIndex(index Object, value Object) {
 	panic("unimplemented")
 }
 
+func (obj *genericObject) Parents() []Object {
+	return obj.isa
+}
+
+func (obj *genericObject) AddParent(p Object) {
+	obj.isa = append(obj.isa, p)
+}
+
+func (obj *genericObject) RemoveParent(p Object) {
+	panic("unimplemented")
+}
+
+func (obj *genericObject) HasParent(p Object) bool {
+	panic("unimplemented")
+	return false
+}
+
 // call the object with the given call info, returning an object
 func (obj *genericObject) Call(c Call) Object {
 	panic("unimplemented")
@@ -121,18 +169,19 @@ func (obj *genericObject) Call(c Call) Object {
 
 // return a string description of the object
 func (obj *genericObject) Description() string {
-	panic("unimplemented")
-	return ""
+	s := "("
+
+	return s
 }
 
 func computed(val PropertyValue) Object {
-    switch v := val.(type) {
-    case nil:
-        return nil
-    case Object:
-        return v
-    default:
-        return nil
-    }
+	switch v := val.(type) {
+	case nil:
+		return nil
+	case Object:
+		return v
+	default:
+		return nil
+	}
 	return nil
 }
