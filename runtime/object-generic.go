@@ -202,10 +202,11 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 			if d.ignore[v] != 0 {
 				valueStr = "(recursion)"
 			} else {
-				valueStr = v.Description(d)
+				valueStr = indent(4, v.Description(d))
 				d.ignore[v]++
 			}
-		// TODO: computed
+		case LazyEvaluatedValue, ComputedProperty:
+			valueStr = "(computed)"
 		default:
 			valueStr = "(unknown)"
 		}
@@ -217,14 +218,8 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 }
 
 func indent(n int, s string) string {
-	pfx := strings.Repeat(" ", n)
-	lines := strings.Split(s, "\n")
-	indented := make([]string, len(lines))
-	for _, line := range lines {
-		line = pfx + line
-		indented = append(indented, line)
-	}
-	return strings.Join(indented, "\n")
+	spaces := strings.Repeat(" ", n)
+	return strings.Join(strings.Split(s, "\n"), "\n"+spaces)
 }
 
 func computed(val PropertyValue, obj Object, owner Object) Object {
@@ -241,5 +236,4 @@ func computed(val PropertyValue, obj Object, owner Object) Object {
 	default:
 		return nil
 	}
-	return nil
 }

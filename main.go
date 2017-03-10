@@ -9,5 +9,9 @@ func main() {
 	o2 := runtime.NewObject()
 	o2.Set("hi2", runtime.Fstring("hey there"))
 	o2.AddParent(o1)
+	o3 := runtime.NewObject()
+	o3.Set("hey", runtime.Fstring("hi fam"))
+	o3.Set("hayy", runtime.Fstring("hows it going"))
+	o1.Set("hello", o3)
 	fmt.Println(o2.Description(nil))
 }
