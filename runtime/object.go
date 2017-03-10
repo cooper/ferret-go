@@ -6,9 +6,16 @@ type Object interface {
     // or lazy-evaluated value, it is NOT evaluated
     Property(name string) (owner Object, value PropertyValue)
 
-    // fetch a property and its own, always yielding an Object by
+    // fetch the object's own property
+    PropertyOwn(name string) PropertyValue
+
+    // fetch a property and its owner, always yielding an Object by
     // evaluating computed properties
     PropertyComputed(name string) (owner Object, value Object)
+
+    // fetch the object's own property, always yielding an Object by
+    // evaluating computed properties
+    PropertyOwnComputed(name string) Object
 
     // true if the object has a property by the given name
     Has(name string) bool
@@ -25,8 +32,8 @@ type Object interface {
 
     // delete the property by the given name, optionally taking into
     // consideration inherited properties. return the deleted object
-    Delete(name string) Object
-    DeleteOverwrite(name string) Object
+    Delete(name string)
+    DeleteOverwrite(name string)
 
     // fetch and evaluate or set the value at the given index
     GetIndex(index Object) Object
