@@ -1,5 +1,7 @@
 package runtime
 
+import "strings"
+
 type genericObject struct {
 	properties map[string]PropertyValue
 	isa        []Object
@@ -170,8 +172,47 @@ func (obj *genericObject) Call(c Call) Object {
 // return a string description of the object
 func (obj *genericObject) Description() string {
 	s := "("
+	for i, propName := range obj.Properties() {
+		owner, value := obj.Property(propName)
+		if i == 0 {
+			s += "\n"
+		}
+		s += "    "
 
+		// property name
+		if owner == obj {
+			s += propName
+		} else {
+			s += "(" + propName + ")"
+		}
+
+		// value
+		var valueStr string
+		switch v := value.(type) {
+		case nil:
+			valueStr = "undefined"
+		case Object:
+			valueStr = v.Description()
+		// TODO: computed
+		default:
+			valueStr = "(unknown)"
+		}
+
+		s += " = " + valueStr + "\n"
+	}
+	s += ")"
 	return s
+}
+
+func indent(n int, s string) string {
+	pfx := strings.Repeat(" ", n)
+	lines := strings.Split(s, "\n")
+	indented := make([]string, len(lines))
+	for _, line := range lines {
+		line = pfx + line
+		indented = append(indented, line)
+	}
+	return strings.Join(indented, "\n")
 }
 
 func computed(val PropertyValue) Object {
@@ -180,6 +221,7 @@ func computed(val PropertyValue) Object {
 		return nil
 	case Object:
 		return v
+		// TODO: computed
 	default:
 		return nil
 	}

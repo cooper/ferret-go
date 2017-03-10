@@ -49,16 +49,16 @@ type Object interface {
 
 	// INHERITANCE
 
-    // fetch parent objects
+	// fetch parent objects
 	Parents() []Object
 
-    // add parent object
+	// add parent object
 	AddParent(p Object)
 
-    // remove parent object
+	// remove parent object
 	RemoveParent(p Object)
 
-    // object has this parent
+	// object has this parent
 	HasParent(p Object) bool
 
 	// OTHER
