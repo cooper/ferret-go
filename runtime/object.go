@@ -67,10 +67,20 @@ type Object interface {
 	Call(c Call) Object
 
 	// return a string description of the object
-	Description() string
+	Description(d *DescriptionOption) string
 }
 
 type PropertyValue interface{}
 
+type ComputedProperty struct {
+	function Object // TODO: *Function
+}
+
+type LazyEvaluatedValue func(object Object, owner Object) Object
+
 type Call struct {
+}
+
+type DescriptionOption struct {
+	ignore map[Object]uint
 }

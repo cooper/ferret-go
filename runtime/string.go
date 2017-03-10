@@ -7,6 +7,6 @@ type String struct {
 	*genericObject
 }
 
-func (s *String) Description() string {
+func (s *String) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("%#v", s.value)
 }

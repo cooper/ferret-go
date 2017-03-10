@@ -9,5 +9,5 @@ func main() {
 	o2 := runtime.NewObject()
 	o2.Set("hi2", runtime.Fstring("hey there"))
 	o2.AddParent(o1)
-	fmt.Println(o2.Description())
+	fmt.Println(o2.Description(nil))
 }

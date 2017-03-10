@@ -39,14 +39,14 @@ func (obj *genericObject) PropertyOwn(name string) PropertyValue {
 // evaluating computed properties
 func (obj *genericObject) PropertyComputed(name string) (Object, Object) {
 	owner, val := obj.Property(name)
-	return owner, computed(val)
+	return owner, computed(val, obj, owner)
 }
 
 // fetch the object's own property, always yielding an Object by
 // evaluating computed properties
 func (obj *genericObject) PropertyOwnComputed(name string) Object {
 	val := obj.PropertyOwn(name)
-	return computed(val)
+	return computed(val, obj, obj)
 }
 
 // all properties
@@ -104,7 +104,7 @@ func (obj *genericObject) GetOwn(name string) Object {
 	if owner != obj {
 		return nil
 	}
-	return computed(val)
+	return computed(val, obj, obj)
 }
 
 // write the given value to the property by the given name
@@ -170,7 +170,14 @@ func (obj *genericObject) Call(c Call) Object {
 }
 
 // return a string description of the object
-func (obj *genericObject) Description() string {
+func (obj *genericObject) Description(d *DescriptionOption) string {
+
+	// initial options
+	if d == nil {
+		d = &DescriptionOption{ignore: make(map[Object]uint)}
+	}
+
+	// properties
 	s := "("
 	for i, propName := range obj.Properties() {
 		owner, value := obj.Property(propName)
@@ -192,7 +199,12 @@ func (obj *genericObject) Description() string {
 		case nil:
 			valueStr = "undefined"
 		case Object:
-			valueStr = v.Description()
+			if d.ignore[v] != 0 {
+				valueStr = "(recursion)"
+			} else {
+				valueStr = v.Description(d)
+				d.ignore[v]++
+			}
 		// TODO: computed
 		default:
 			valueStr = "(unknown)"
@@ -215,13 +227,17 @@ func indent(n int, s string) string {
 	return strings.Join(indented, "\n")
 }
 
-func computed(val PropertyValue) Object {
+func computed(val PropertyValue, obj Object, owner Object) Object {
 	switch v := val.(type) {
 	case nil:
 		return nil
 	case Object:
 		return v
-		// TODO: computed
+	case ComputedProperty:
+		c := Call{} // TODO
+		return v.function.Call(c)
+	case LazyEvaluatedValue:
+		return v(obj, owner)
 	default:
 		return nil
 	}
