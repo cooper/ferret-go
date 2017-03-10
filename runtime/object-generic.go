@@ -5,6 +5,17 @@ type genericObject struct {
     isa []Object
 }
 
+func NewObject() Object {
+    return objectBase()
+}
+
+func objectBase() *genericObject {
+    return &genericObject{
+        make(map[string]PropertyValue),
+        make([]Object, 0),
+    }
+}
+
 // fetch a property and its owner. if this is a computed property
 // or lazy-evaluated value, it is NOT evaluated
 func (obj *genericObject) Property(name string) (Object, PropertyValue) {
@@ -17,6 +28,7 @@ func (obj *genericObject) Property(name string) (Object, PropertyValue) {
     return nil, nil
 }
 
+// fetch the object's own property
 func (obj *genericObject) PropertyOwn(name string) PropertyValue {
     return obj.properties[name]
 }

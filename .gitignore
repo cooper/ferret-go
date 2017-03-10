@@ -1,0 +1,4 @@
+.goutputstream*
+*~
+*.old
+ferret-go
