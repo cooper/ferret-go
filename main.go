@@ -16,7 +16,7 @@ func main() {
 	runtime.MainContext.Set("ayy", o2)
 
 	runtime.MainContext.Set("weakObject", runtime.NewObject())
-	
+
 	fmt.Println(runtime.MainContext.Description(nil))
 	runtime.MainContext.Weaken("weakObject")
 	fmt.Println(runtime.MainContext.Description(nil))

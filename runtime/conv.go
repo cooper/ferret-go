@@ -17,3 +17,19 @@ func Fstring(i interface{}) *String {
 	}
 	return NewString(s)
 }
+
+func Fbool(i interface{}) *Boolean {
+	switch v := i.(type) {
+	case *Boolean:
+		return v
+	case nil:
+		return False
+	case bool:
+		if v {
+			return True
+		}
+		return False
+	default:
+		return False
+	}
+}
