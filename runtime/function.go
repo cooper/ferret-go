@@ -9,8 +9,14 @@ type Function struct {
 type FunctionCode func(c Call)
 
 type Call struct {
-	Scope *Scope
-	Ret   *Return
+	Self  Object    // *self
+	This  Object    // *this
+	Topic Object    // $_
+	Args  Object    // arguments
+	Scope *Scope    // function body scope
+	Ret   *Return   // return object
+	Func  *Function // the function itself
+	// call scope? maybe we don't need it anymore
 }
 
 func NewFunction(name string, code FunctionCode) *Function {
@@ -18,6 +24,8 @@ func NewFunction(name string, code FunctionCode) *Function {
 }
 
 func (f *Function) Call(c Call) Object {
+	c.Func = f
+	f.Code(c)
 	return c.Ret.Return()
 }
 
