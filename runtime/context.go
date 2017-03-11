@@ -10,10 +10,13 @@ type Context struct {
 }
 
 func NewContext(name string, parent *Context) *Context {
-	c := &Context{name, NewScope()}
-	if parent != nil {
-		c.AddParent(parent)
+	var s *Scope
+	if parent == nil {
+		s = NewScope(nil)
+	} else {
+		s = NewScope(parent)
 	}
+	c := &Context{name, s}
 	return c
 }
 

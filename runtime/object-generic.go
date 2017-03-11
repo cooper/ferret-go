@@ -151,6 +151,9 @@ func (obj *genericObject) Parents() []Object {
 }
 
 func (obj *genericObject) AddParent(p Object) {
+	if p == nil {
+		return
+	}
 	obj.isa = append(obj.isa, p)
 }
 
