@@ -1,5 +1,7 @@
 package runtime
 
+import "../weakref"
+
 type Object interface {
 
 	// PROPERTIES
@@ -76,6 +78,18 @@ type Object interface {
 }
 
 type PropertyValue interface{}
+
+func verifyPropertyValue(v PropertyValue) {
+	switch v.(type) {
+	case nil:
+	case Object:
+	case LazyEvaluatedValue:
+	case ComputedProperty:
+	case *weakref.WeakRef:
+	default:
+		panic("invalid property value")
+	}
+}
 
 type ComputedProperty struct {
 	function Object // TODO: *Function

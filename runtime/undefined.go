@@ -126,5 +126,5 @@ func (u UndefinedObject) Description(d *DescriptionOption) string {
 }
 
 func IsUndefined(o Object) bool {
-    return o == Undefined
+	return o == Undefined
 }
