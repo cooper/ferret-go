@@ -16,6 +16,9 @@ func main() {
 	runtime.MainContext.Set("ayy", o2)
 
 	runtime.MainContext.Set("weakObject", runtime.NewObject())
+	runtime.MainContext.Set("undef", runtime.Undefined)
+	runtime.MainContext.Set("tru", runtime.True)
+	runtime.MainContext.Set("fals", runtime.False)
 
 	fmt.Println(runtime.MainContext.Description(nil))
 	runtime.MainContext.Weaken("weakObject")
