@@ -1,6 +1,6 @@
 package runtime
 
-import "strings"
+import "../utils"
 
 type genericObject struct {
 	properties map[string]PropertyValue
@@ -202,7 +202,7 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 			if d.ignore[v] != 0 {
 				valueStr = "(recursion)"
 			} else {
-				valueStr = indent(4, v.Description(d))
+				valueStr = utils.Indent(4, v.Description(d))
 				d.ignore[v]++
 			}
 		case LazyEvaluatedValue, ComputedProperty:
@@ -215,11 +215,6 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 	}
 	s += ")"
 	return s
-}
-
-func indent(n int, s string) string {
-	spaces := strings.Repeat(" ", n)
-	return strings.Join(strings.Split(s, "\n"), "\n"+spaces)
 }
 
 func computed(val PropertyValue, obj Object, owner Object) Object {
