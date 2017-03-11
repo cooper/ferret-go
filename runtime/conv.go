@@ -15,5 +15,5 @@ func Fstring(i interface{}) *String {
 	default:
 		s = fmt.Sprintf("%v", v)
 	}
-	return &String{s, objectBase()}
+	return NewString(s)
 }

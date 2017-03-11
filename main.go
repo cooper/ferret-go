@@ -13,5 +13,6 @@ func main() {
 	o3.Set("hey", runtime.Fstring("hi fam"))
 	o3.Set("hayy", runtime.Fstring("hows it going"))
 	o1.Set("hello", o3)
-	fmt.Println(o2.Description(nil))
+	runtime.MainContext.Set("ayy", o2)
+	fmt.Println(runtime.MainContext.Description(nil))
 }

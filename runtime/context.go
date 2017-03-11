@@ -2,7 +2,7 @@ package runtime
 
 import "fmt"
 
-var mainContext = NewContext("main", nil)
+var MainContext = NewContext("main", nil)
 
 type Context struct {
 	name string
