@@ -1,6 +1,9 @@
 package runtime
 
-import "../utils"
+import (
+	"../utils"
+	"../weakref"
+)
 
 type genericObject struct {
 	properties map[string]PropertyValue
@@ -135,6 +138,29 @@ func (obj *genericObject) DeleteOverwrite(name string) {
 	owner.Delete(name)
 }
 
+// weaken the property by the given name
+func (obj *genericObject) Weaken(name string) {
+	val := obj.PropertyOwn(name)
+	if val == nil {
+		return
+	}
+	if p, ok := val.(Object); ok {
+		wr := weakref.NewWeakRef(p)
+		obj.Set(name, wr)
+		return
+	}
+	panic("unable to weaken ." + name)
+}
+
+// weaken the property by the given name, even if it is inherited
+func (obj *genericObject) WeakenOverwrite(name string) {
+	owner, _ := obj.Property(name)
+	if owner == nil {
+		return
+	}
+	owner.Weaken(name)
+}
+
 // fetch and evaluate the value at the given index
 func (obj *genericObject) GetIndex(index Object) Object {
 	panic("unimplemented")
@@ -231,6 +257,11 @@ func computed(val PropertyValue, obj Object, owner Object) Object {
 		return v.function.Call(c)
 	case LazyEvaluatedValue:
 		return v(obj, owner)
+	case *weakref.WeakRef:
+		if p := v.Get(); p != nil {
+			return computed(p, obj, owner)
+		}
+		return nil
 	default:
 		return nil
 	}

@@ -1,7 +1,6 @@
 package weakref
 
 import (
-	"fmt"
 	"runtime"
 	"sync/atomic"
 	"unsafe"

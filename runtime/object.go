@@ -37,9 +37,14 @@ type Object interface {
 	SetOverwrite(name string, value PropertyValue)
 
 	// delete the property by the given name, optionally taking into
-	// consideration inherited properties. return the deleted object
+	// consideration inherited properties
 	Delete(name string)
 	DeleteOverwrite(name string)
+
+	// weaken the property by the given name, optionally taking into
+	// consideration inherited properties
+	Weaken(name string)
+	WeakenOverwrite(name string)
 
 	// INDICES
 
