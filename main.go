@@ -19,8 +19,17 @@ func main() {
 	runtime.MainContext.Set("undef", runtime.Undefined)
 	runtime.MainContext.Set("tru", runtime.True)
 	runtime.MainContext.Set("fals", runtime.False)
+	runtime.MainContext.Weaken("weakObject")
+
+	sayFunc := runtime.NewFunction("say", say)
+	runtime.MainContext.Set("say", sayFunc)
+	sayFunc.Call(runtime.Call{
+		Urgs: []runtime.Object{runtime.Fstring("Hello World!")},
+	})
 
 	fmt.Println(runtime.MainContext.Description(nil))
-	runtime.MainContext.Weaken("weakObject")
-	fmt.Println(runtime.MainContext.Description(nil))
+}
+
+func say(c runtime.Call) {
+	fmt.Println(c.Args["message"])
 }

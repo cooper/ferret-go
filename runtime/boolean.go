@@ -4,6 +4,7 @@ var True = Boolean(true)
 var False = Boolean(false)
 
 type Boolean bool
+
 var _ = Object(True)
 
 // fetch a property and its owner. if this is a computed property
