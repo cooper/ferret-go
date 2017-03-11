@@ -3,7 +3,7 @@ package runtime
 import "fmt"
 
 type String struct {
-	value string
+	Value string
 	*genericObject
 }
 
@@ -12,5 +12,5 @@ func NewString(s string) *String {
 }
 
 func (s *String) Description(d *DescriptionOption) string {
-	return fmt.Sprintf("%#v", s.value)
+	return fmt.Sprintf("%#v", s.Value)
 }

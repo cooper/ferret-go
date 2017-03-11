@@ -78,9 +78,6 @@ type ComputedProperty struct {
 
 type LazyEvaluatedValue func(object Object, owner Object) Object
 
-type Call struct {
-}
-
 type DescriptionOption struct {
 	ignore map[Object]uint
 }

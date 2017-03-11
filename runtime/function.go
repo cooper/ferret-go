@@ -1,15 +1,24 @@
 package runtime
 
 type Function struct {
-	name string
-	code FunctionCode
+	Name string
+	Code FunctionCode
 	*genericObject
 }
 
 type FunctionCode func(c Call)
 
+type Call struct {
+	Scope *Scope
+	Ret   *Return
+}
+
 func NewFunction(name string, code FunctionCode) *Function {
 	return &Function{name, code, objectBase()}
+}
+
+func (f *Function) Call(c Call) Object {
+	return c.Ret.Return()
 }
 
 func (f *Function) SignatureString() string {
@@ -22,8 +31,8 @@ func (f *Function) DetailedSignatureString() string {
 
 func (f *Function) Description(d *DescriptionOption) string {
 	s := "Function"
-	if f.name != "" {
-		s += " '" + f.name + "'"
+	if f.Name != "" {
+		s += " '" + f.Name + "'"
 	}
 	if sig := f.DetailedSignatureString(); sig != "" {
 		s += " { " + sig + " }"
