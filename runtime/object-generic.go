@@ -144,12 +144,8 @@ func (obj *genericObject) Weaken(name string) {
 	if val == nil {
 		return
 	}
-	if p, ok := val.(Object); ok {
-		wr := weakref.NewWeakRef(p)
-		obj.Set(name, wr)
-		return
-	}
-	panic("unable to weaken ." + name)
+	wr := weakref.NewWeakRef(val)
+	obj.Set(name, wr)
 }
 
 // weaken the property by the given name, even if it is inherited
@@ -223,27 +219,30 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 		}
 
 		// value
-		var valueStr string
-		switch v := value.(type) {
-		case nil:
-			valueStr = "undefined"
-		case Object:
-			if d.ignore[v] != 0 {
-				valueStr = "(recursion)"
-			} else {
-				valueStr = utils.Indent(4, v.Description(d))
-				d.ignore[v]++
-			}
-		case LazyEvaluatedValue, ComputedProperty:
-			valueStr = "(computed)"
-		default:
-			valueStr = "(unknown)"
-		}
-
-		s += " = " + valueStr + "\n"
+		s += " = " + valueStr(value, d) + "\n"
 	}
 	s += ")"
 	return s
+}
+
+func valueStr(value PropertyValue, d *DescriptionOption) string {
+	switch v := value.(type) {
+	case nil:
+		return "undefined"
+	case Object:
+		if d.ignore[v] != 0 {
+			return "(recursion)"
+		} else {
+			d.ignore[v]++
+			return utils.Indent(4, v.Description(d))
+		}
+	case LazyEvaluatedValue, ComputedProperty:
+		return "(computed)"
+	case *weakref.WeakRef:
+		return valueStr(v.Get(), d)
+	default:
+		return "(unknown)"
+	}
 }
 
 func computed(val PropertyValue, obj Object, owner Object) Object {

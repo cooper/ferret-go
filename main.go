@@ -14,5 +14,10 @@ func main() {
 	o3.Set("hayy", runtime.Fstring("hows it going"))
 	o1.Set("hello", o3)
 	runtime.MainContext.Set("ayy", o2)
+
+	runtime.MainContext.Set("weakObject", runtime.NewObject())
+	
+	fmt.Println(runtime.MainContext.Description(nil))
+	runtime.MainContext.Weaken("weakObject")
 	fmt.Println(runtime.MainContext.Description(nil))
 }
