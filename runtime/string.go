@@ -3,10 +3,13 @@ package runtime
 import "fmt"
 
 var stringClass = ClassBinding{
-	Name:    "String",
-	Aliases: []string{"Str"},
-	Creator: func() Object { return NewString("") },
+	Name:      "String",
+	Aliases:   []string{"Str"},
+	Creator:   func() Object { return NewString("") },
+	Prototype: stringPrototype,
 }
+
+var stringPrototype = NewPrototype("String")
 
 type String struct {
 	Value string
@@ -14,7 +17,9 @@ type String struct {
 }
 
 func NewString(s string) *String {
-	return &String{s, objectBase()}
+	str := &String{s, objectBase()}
+	str.AddParent(stringPrototype)
+	return str
 }
 
 func (s *String) Description(d *DescriptionOption) string {

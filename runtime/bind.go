@@ -9,6 +9,7 @@ type ClassBinding struct {
 	Methods     []FunctionBinding // instance methods
 	Aliases     []string          // alternative class names
 	Creator     func() Object     // create a new instance
+	Prototype   *Prototype
 }
 
 type FunctionBinding struct {
@@ -27,7 +28,11 @@ func BindFunction(o Object, f FunctionBinding) *Event {
 }
 
 func BindClass(o Object, c ClassBinding) *Class {
-	class := NewClass(Class{Name: c.Name, Version: c.Version})
+	class := NewClass(Class{
+		Name:    c.Name,
+		Version: c.Version,
+		Creator: c.Creator,
+	}, c.Prototype)
 
 	// initializer
 	if c.Initializer.Code != nil {

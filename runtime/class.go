@@ -9,7 +9,7 @@ type Class struct {
 
 var classPrototype = NewPrototype("Class") // TODO
 
-func NewClass(opts Class) *Class {
+func NewClass(opts Class, proto *Prototype) *Class {
 	c := &opts
 	c.genericObject = objectBase()
 
@@ -17,7 +17,10 @@ func NewClass(opts Class) *Class {
 	c.AddParent(classPrototype)
 
 	// create this class's prototype
-	c.Set("proto", NewPrototype(c.Name))
+	if proto == nil {
+		proto = NewPrototype(c.Name)
+	}
+	c.Set("proto", proto)
 
 	// set name and version properties
 	c.Set("name", c.Name)
@@ -45,6 +48,16 @@ func (c *Class) Signature() *Signature {
 		return &Signature{}
 	}
 	return c.Initializer().Signature()
+}
+
+func (class *Class) Init(obj Object, c Call) *Return {
+
+	// can't initialize as a builtin type
+	if class.Creator != nil {
+		panic("cannot initialize existing object as type " + class.Name)
+	}
+
+	return c.Ret
 }
 
 func (class *Class) Call(c Call) Object {
