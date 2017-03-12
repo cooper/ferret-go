@@ -37,7 +37,7 @@ func (e SignatureEntry) String() string {
 	return s
 }
 
-func (sig *Signature) String() string {
+func (sig *Signature) ArgumentString() string {
 	if len(sig.Arguments) == 0 {
 		return ""
 	}
@@ -64,7 +64,7 @@ func (sig *Signature) ReturnString() string {
 }
 
 func (sig *Signature) DetailedString() string {
-	s := sig.String()
+	s := sig.ArgumentString()
 	r := sig.ReturnString()
 	if len(s) != 0 && len(r) != 0 {
 		return s + " " + r

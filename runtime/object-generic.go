@@ -226,6 +226,10 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 	return s
 }
 
+func (obj *genericObject) String() string {
+	return obj.Description(nil)
+}
+
 func valueStr(value PropertyValue, d *DescriptionOption) string {
 	switch v := value.(type) {
 	case nil:

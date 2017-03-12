@@ -75,6 +75,7 @@ type Object interface {
 
 	// return a string description of the object
 	Description(d *DescriptionOption) string
+	String() string
 }
 
 type PropertyValue interface{}

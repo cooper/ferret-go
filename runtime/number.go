@@ -19,3 +19,7 @@ func (n *Number) AsFloat() float64 {
 func (n *Number) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("%v", n.AsFloat())
 }
+
+func (n *Number) String() string {
+	return n.Description(nil)
+}

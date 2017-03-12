@@ -20,6 +20,10 @@ func (r *Return) Return() Object {
 	return r
 }
 
-func (s *Return) Description(d *DescriptionOption) string {
-	return "[ Return ] " + s.genericObject.Description(d)
+func (r *Return) Description(d *DescriptionOption) string {
+	return "[ Return ] " + r.genericObject.Description(d)
+}
+
+func (r *Return) String() string {
+	return r.Description(nil)
 }

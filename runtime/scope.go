@@ -34,3 +34,7 @@ func (s *Scope) With(propNames ...string) *Scope {
 func (s *Scope) Description(d *DescriptionOption) string {
 	return "[ Scope ] " + s.genericObject.Description(d)
 }
+
+func (s *Scope) String() string {
+	return s.Description(nil)
+}

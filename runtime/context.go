@@ -23,3 +23,7 @@ func NewContext(name string, parent *Context) *Context {
 func (c *Context) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("[ Context '%s' ] %s", c.name, c.genericObject.Description(d))
 }
+
+func (c *Context) String() string {
+	return c.Description(nil)
+}

@@ -31,7 +31,7 @@ func main() {
 		Urgs: []runtime.Object{runtime.Fstring("Hello World!")},
 	})
 
-	fmt.Println(runtime.MainContext.Description(nil))
+	fmt.Println(runtime.MainContext)
 }
 
 func say(c runtime.Call) {

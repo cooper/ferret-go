@@ -129,3 +129,7 @@ func (b Boolean) Description(d *DescriptionOption) string {
 	}
 	return "false"
 }
+
+func (b Boolean) String() string {
+	return b.Description(nil)
+}
