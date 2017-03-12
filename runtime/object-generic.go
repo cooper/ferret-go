@@ -112,7 +112,7 @@ func (obj *genericObject) GetOwn(name string) Object {
 
 // write the given value to the property by the given name
 func (obj *genericObject) Set(name string, value PropertyValue) {
-	verifyPropertyValue(value)
+	value = verifyPropertyValue(value)
 	obj.properties[name] = value
 }
 

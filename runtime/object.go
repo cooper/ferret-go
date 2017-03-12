@@ -82,16 +82,32 @@ type Object interface {
 type PropertyValue interface{}
 
 // called in Set methods to verify that a property is valid
-func verifyPropertyValue(v PropertyValue) {
+func verifyPropertyValue(v PropertyValue) PropertyValue {
 	switch v.(type) {
+
+	// nothing
 	case nil:
+
+	// normal property values
 	case Object:
 	case LazyEvaluatedValue:
 	case ComputedProperty:
 	case *weakref.WeakRef:
+
+	// conversion from go builtin types
+	case string:
+		return Fstring(v)
+	case float64, float32,
+		int64, int32, int16, int8, int,
+		uint64, uint32, uint16, uint8, uint:
+		return Fnum(v)
+	case bool:
+		return Fbool(v)
+
 	default:
 		panic("invalid property value")
 	}
+	return v
 }
 
 // a PropertyValue representing a computed property
