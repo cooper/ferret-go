@@ -16,3 +16,11 @@ type FunctionBinding struct {
 	Need string       // required arguments
 	Want string       // optional arguments
 }
+
+func bindFunction(f FunctionBinding) *Event {
+	e := NewEventWithCode(f.Name, f.Code)
+	e.Default.Signature.AddNeedString(f.Need)
+	e.Default.Signature.AddWantString(f.Want)
+	MainContext.Set(f.Name, e)
+	return e
+}

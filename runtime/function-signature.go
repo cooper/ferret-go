@@ -18,6 +18,16 @@ func (sig *Signature) AddArgument(e SignatureEntry) {
 	sig.Arguments = append(sig.Arguments, e)
 }
 
+func (sig *Signature) AddNeedString(s string) {
+	entries := stringToEntries(s, false)
+	sig.Arguments = append(sig.Arguments, entries...)
+}
+
+func (sig *Signature) AddWantString(s string) {
+	entries := stringToEntries(s, true)
+	sig.Arguments = append(sig.Arguments, entries...)
+}
+
 func (sig *Signature) AddReturn(e SignatureEntry) {
 	sig.Arguments = append(sig.Arguments, e)
 }
@@ -72,4 +82,38 @@ func (sig *Signature) DetailedString() string {
 		return r
 	}
 	return s
+}
+
+func stringToEntries(s string, optional bool) []SignatureEntry {
+	parts := strings.Split(s, " ")
+	entries := make([]SignatureEntry, len(parts))
+	for i, part := range parts {
+
+		// must start with $
+		if !strings.HasPrefix(part, "$") {
+			panic("bad string argument " + part)
+		}
+		part = strings.TrimPrefix(part, "$")
+
+		// if it ends in ..., it's a hungry argument
+		hungry := strings.HasSuffix(part, "...")
+		if hungry {
+			part = strings.TrimSuffix(part, "...")
+		}
+
+		e := SignatureEntry{
+			Optional: optional,
+			Hungry:   hungry,
+		}
+
+		// might have types
+		nameType := strings.SplitN(part, ":", 2)
+		e.Name = nameType[0]
+		if len(nameType) == 2 {
+			e.Types = strings.Split(nameType[1], "|")
+		}
+
+		entries[i] = e
+	}
+	return entries
 }
