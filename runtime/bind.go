@@ -24,3 +24,33 @@ func BindFunction(o Object, f FunctionBinding) *Event {
 	o.Set(f.Name, e)
 	return e
 }
+
+func BindClass(o Object, c ClassBinding) *Class {
+	class := NewClass(Class{Name: c.Name, Version: c.Version})
+
+	// initializer
+	if c.Initializer.Code != nil {
+		c.Initializer.Name = "initializer__"
+		BindFunction(class, c.Initializer)
+	}
+
+	// class functions
+	for _, f := range c.Functions {
+		BindFunction(class, f)
+	}
+
+	// instance methods
+	proto := class.Proto()
+	for _, f := range c.Methods {
+		BindFunction(proto, f)
+	}
+
+	// TODO: Package
+
+	// store the class
+	for _, name := range append(c.Aliases, c.Name) {
+		o.Set(name, class)
+	}
+
+	return class
+}
