@@ -1,27 +1,28 @@
 package runtime
 
 type Function struct {
-	Name string
-	Code FunctionCode
+	Name      string
+	Code      FunctionCode
+	Signature Signature
 	*genericObject
 }
 
 type FunctionCode func(c Call)
 
 type Call struct {
-	Self  Object     // *self
-	This  Object     // *this
-	Topic Object     // $_
-	Urgs  []Object   // unnamed arguments
+	Self  Object    // *self
+	This  Object    // *this
+	Topic Object    // $_
+	Urgs  []Object  // unnamed arguments
 	Args  Arguments // named arguments
-	Scope *Scope     // function body scope
-	Ret   *Return    // return object
-	Func  *Function  // the function itself
+	Scope *Scope    // function body scope
+	Ret   *Return   // return object
+	Func  *Function // the function itself
 	// call scope? maybe we don't need it anymore
 }
 
 func NewFunction(name string, code FunctionCode) *Function {
-	return &Function{name, code, objectBase()}
+	return &Function{name, code, Signature{}, objectBase()}
 }
 
 func (f *Function) Call(c Call) Object {
@@ -45,7 +46,13 @@ func (f *Function) Call(c Call) Object {
 	return c.Ret.Return()
 }
 
+// map arguments to their respective names
 func (f *Function) handleArguments(c *Call) {
+
+}
+
+// verify that the provided arguments satisfy the signature
+func (f *Function) verifyArguments(c *Call) {
 
 }
 
