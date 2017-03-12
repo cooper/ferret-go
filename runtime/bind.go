@@ -8,6 +8,7 @@ type ClassBinding struct {
 	Functions   []FunctionBinding // class functions
 	Methods     []FunctionBinding // instance methods
 	Aliases     []string          // alternative class names
+	Creator     func() Object     // create a new instance
 }
 
 type FunctionBinding struct {

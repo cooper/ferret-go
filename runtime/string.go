@@ -5,6 +5,7 @@ import "fmt"
 var stringClass = ClassBinding{
 	Name:    "String",
 	Aliases: []string{"Str"},
+	Creator: func() Object { return NewString("") },
 }
 
 type String struct {

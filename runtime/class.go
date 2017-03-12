@@ -3,6 +3,7 @@ package runtime
 type Class struct {
 	Name    string
 	Version float32
+	Creator func() Object
 	*genericObject
 }
 
@@ -44,6 +45,19 @@ func (c *Class) Signature() *Signature {
 		return &Signature{}
 	}
 	return c.Initializer().Signature()
+}
+
+func (class *Class) Call(c Call) Object {
+
+	// if we have a creator, use it
+	if class.Creator != nil {
+		return class.Creator()
+	}
+
+	// otherwise, make a new object, then initialize it
+	obj := NewObject()
+	// TODO: initialize
+	return obj
 }
 
 func (c *Class) Description(d *DescriptionOption) string {
