@@ -78,8 +78,10 @@ type Object interface {
 	String() string
 }
 
+// a value which can be stored as a property
 type PropertyValue interface{}
 
+// called in Set methods to verify that a property is valid
 func verifyPropertyValue(v PropertyValue) {
 	switch v.(type) {
 	case nil:
@@ -92,12 +94,17 @@ func verifyPropertyValue(v PropertyValue) {
 	}
 }
 
+// a PropertyValue representing a computed property
 type ComputedProperty struct {
-	function Object // TODO: *Function
+	function *Function
 }
 
+// a PropertyValue representing a lazy-evaluated value.
+// unlike ComputedProperty, this does not have to be associated with an actual
+// function object
 type LazyEvaluatedValue func(object Object, owner Object) Object
 
+// options passed to all Description methods
 type DescriptionOption struct {
 	ignore map[Object]uint
 }
