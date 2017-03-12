@@ -30,7 +30,7 @@ func (e *Event) Signature() *Signature {
 	if e.Default == nil {
 		return &Signature{}
 	}
-	return e.Default.Signature
+	return e.Default.signature
 }
 
 func (e *Event) Description(d *DescriptionOption) string {

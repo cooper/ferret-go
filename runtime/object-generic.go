@@ -42,14 +42,14 @@ func (obj *genericObject) PropertyOwn(name string) PropertyValue {
 // evaluating computed properties
 func (obj *genericObject) PropertyComputed(name string) (Object, Object) {
 	owner, val := obj.Property(name)
-	return owner, computed(val, obj, owner)
+	return owner, computed(name, val, obj, owner)
 }
 
 // fetch the object's own property, always yielding an Object by
 // evaluating computed properties
 func (obj *genericObject) PropertyOwnComputed(name string) Object {
 	val := obj.PropertyOwn(name)
-	return computed(val, obj, obj)
+	return computed(name, val, obj, obj)
 }
 
 // all properties
@@ -107,7 +107,7 @@ func (obj *genericObject) GetOwn(name string) Object {
 	if owner != obj {
 		return nil
 	}
-	return computed(val, obj, obj)
+	return computed(name, val, obj, obj)
 }
 
 // write the given value to the property by the given name
@@ -250,7 +250,7 @@ func valueStr(value PropertyValue, d *DescriptionOption) string {
 	}
 }
 
-func computed(val PropertyValue, obj Object, owner Object) Object {
+func computed(name string, val PropertyValue, obj Object, owner Object) Object {
 	switch v := val.(type) {
 	case nil:
 		return nil
@@ -258,12 +258,16 @@ func computed(val PropertyValue, obj Object, owner Object) Object {
 		return v
 	case ComputedProperty:
 		c := Call{} // TODO
-		return v.function.Call(c)
+		o := v.function.Call(c)
+		if v.lazy {
+			owner.Set(name, o)
+		}
+		return o
 	case LazyEvaluatedValue:
 		return v(obj, owner)
 	case *weakref.WeakRef:
 		if p := v.Get(); p != nil {
-			return computed(p, obj, owner)
+			return computed(name, p, obj, owner)
 		}
 		return nil
 	default:

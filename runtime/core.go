@@ -2,8 +2,17 @@ package runtime
 
 import "fmt"
 
+var coreClasses = make([]ClassBinding, 0)
+
 var coreFunctions = []FunctionBinding{
-	{"say", _say, "$message", ""},
+	{Name: "say", Code: _say, Need: "$message"},
+}
+
+func addCoreClasses(ctx *Context) *Context {
+	for _, c := range coreClasses {
+		BindClass(ctx, c)
+	}
+	return ctx
 }
 
 func addCoreFunctions(c *Context) *Context {

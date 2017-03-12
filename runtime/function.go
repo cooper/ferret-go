@@ -3,7 +3,7 @@ package runtime
 type Function struct {
 	Name      string
 	Code      FunctionCode
-	Signature *Signature
+	signature *Signature
 	*genericObject
 }
 
@@ -50,7 +50,7 @@ func (f *Function) Call(c Call) Object {
 func (f *Function) handleArguments(c *Call) {
 
 	// we don't have any signature to work with
-	if len(f.Signature.Arguments) == 0 {
+	if len(f.signature.Arguments) == 0 {
 		return
 	}
 
@@ -60,7 +60,7 @@ func (f *Function) handleArguments(c *Call) {
 	}
 
 	// for each signature entry, map the next argument to it
-	for i, e := range f.Signature.Arguments {
+	for i, e := range f.signature.Arguments {
 
 		// there are no unnamed arguments left
 		if len(c.Urgs)-1 < i {
@@ -90,12 +90,16 @@ func (f *Function) verifyArguments(c *Call) {
 
 }
 
+func (f *Function) Signature() *Signature {
+	return f.signature
+}
+
 func (f *Function) Description(d *DescriptionOption) string {
 	s := "Function"
 	if f.Name != "" {
 		s += " '" + f.Name + "'"
 	}
-	if sig := f.Signature.DetailedString(); sig != "" {
+	if sig := f.signature.DetailedString(); sig != "" {
 		s += " { " + sig + " }"
 	}
 	return s

@@ -17,13 +17,30 @@ type FunctionBinding struct {
 	Code FunctionCode // code
 	Need string       // required arguments
 	Want string       // optional arguments
+	Prop bool         // true for computed properties
+	Lazy bool         // true for lazy-evaluated properties
 }
 
 func BindFunction(o Object, f FunctionBinding) *Event {
+
+	// create event
 	e := NewEventWithCode(f.Name, f.Code)
-	e.Default.Signature.AddNeedString(f.Need)
-	e.Default.Signature.AddWantString(f.Want)
-	o.Set(f.Name, e)
+
+	// add wants and needs
+	e.Default.signature.AddNeedString(f.Need)
+	e.Default.signature.AddWantString(f.Want)
+
+	// if it's a property, wrap it
+	var v PropertyValue = e
+	if f.Lazy {
+		v = ComputedProperty{e, true}
+	} else if f.Prop {
+		v = ComputedProperty{e, false}
+	}
+
+	// store the event
+	o.Set(f.Name, v)
+
 	return e
 }
 
@@ -59,4 +76,8 @@ func BindClass(o Object, c ClassBinding) *Class {
 	}
 
 	return class
+}
+
+func bindCoreClass(c ClassBinding) *Class {
+	return BindClass(MainContext, c)
 }

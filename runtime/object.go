@@ -110,9 +110,15 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 	return v
 }
 
+type Code interface {
+	Signature() *Signature
+	Call(c Call) Object
+}
+
 // a PropertyValue representing a computed property
 type ComputedProperty struct {
-	function *Function
+	function Code // function or event
+	lazy     bool // set the value after first evaluation
 }
 
 // a PropertyValue representing a lazy-evaluated value.
