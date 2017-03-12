@@ -26,5 +26,5 @@ func main() {
 		Urgs: []f.Object{f.Fstring("This should not override the named argument")},
 	})
 
-	fmt.Println(f.MainContext)
+	fmt.Println(f.MainContext.String())
 }

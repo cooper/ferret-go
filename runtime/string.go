@@ -2,6 +2,11 @@ package runtime
 
 import "fmt"
 
+var stringClass = ClassBinding{
+	Name:    "String",
+	Aliases: []string{"Str"},
+}
+
 type String struct {
 	Value string
 	*genericObject

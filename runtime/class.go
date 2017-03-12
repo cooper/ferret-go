@@ -40,6 +40,9 @@ func (c *Class) Initializer() *Event {
 }
 
 func (c *Class) Signature() *Signature {
+	if c.Initializer() == nil {
+		return &Signature{}
+	}
 	return c.Initializer().Signature()
 }
 

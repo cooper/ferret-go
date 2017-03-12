@@ -27,6 +27,9 @@ func (e *Event) Call(c Call) Object {
 }
 
 func (e *Event) Signature() *Signature {
+	if e.Default == nil {
+		return &Signature{}
+	}
 	return e.Default.Signature
 }
 
