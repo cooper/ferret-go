@@ -4,6 +4,9 @@ type Event struct {
 	Name      string
 	Default   *Function
 	Functions []*Function
-	Signature *Signature
 	*genericObject
+}
+
+func (e *Event) Signature() *Signature {
+	return e.Default.Signature
 }
