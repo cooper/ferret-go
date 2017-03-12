@@ -28,7 +28,8 @@ func main() {
 	})
 	runtime.MainContext.Set("say", sayFunc)
 	sayFunc.Call(runtime.Call{
-		Urgs: []runtime.Object{runtime.Fstring("Hello World!")},
+		Args: map[string]runtime.Object{"message": runtime.Fstring("Hello World!")},
+		Urgs: []runtime.Object{runtime.Fstring("This should not override the named argument")},
 	})
 
 	fmt.Println(runtime.MainContext)
