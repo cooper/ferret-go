@@ -16,5 +16,5 @@ func (s *String) Description(d *DescriptionOption) string {
 }
 
 func (s *String) String() string {
-	return s.Description(nil)
+	return s.Value
 }

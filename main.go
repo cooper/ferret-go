@@ -1,38 +1,30 @@
 package main
 
-import "./runtime"
+import f "./runtime"
 import "fmt"
 
 func main() {
-	o1 := runtime.NewObject()
-	o1.Set("hi", runtime.Fstring("hey"))
-	o2 := runtime.NewObject()
-	o2.Set("hi2", runtime.Fstring("hey there"))
+	o1 := f.NewObject()
+	o1.Set("hi", f.Fstring("hey"))
+	o2 := f.NewObject()
+	o2.Set("hi2", f.Fstring("hey there"))
 	o2.AddParent(o1)
-	o3 := runtime.NewObject()
+	o3 := f.NewObject()
 	o3.Set("hey", "hi fam")
 	o3.Set("hayy", "hows it going")
 	o1.Set("hello", o3)
-	runtime.MainContext.Set("ayy", o2)
+	f.MainContext.Set("ayy", o2)
 
-	runtime.MainContext.Set("weakObject", runtime.NewObject())
-	runtime.MainContext.Set("undef", runtime.Undefined)
-	runtime.MainContext.Set("tru", true)
-	runtime.MainContext.Set("fals", false)
-	runtime.MainContext.Weaken("weakObject")
+	f.MainContext.Set("weakObject", f.NewObject())
+	f.MainContext.Set("undef", f.Undefined)
+	f.MainContext.Set("tru", true)
+	f.MainContext.Set("fals", false)
+	f.MainContext.Weaken("weakObject")
 
-	runtime.BindFunction(runtime.FunctionBinding{
-		Name: "say",
-		Code: func(c runtime.Call) {
-			fmt.Println(c.Args["message"])
-		},
-		Need: "$message",
+	f.MainContext.Get("say").Call(f.Call{
+		Args: map[string]f.Object{"message": f.Fstring("Hello World!")},
+		Urgs: []f.Object{f.Fstring("This should not override the named argument")},
 	})
 
-	runtime.MainContext.Get("say").Call(runtime.Call{
-		Args: map[string]runtime.Object{"message": runtime.Fstring("Hello World!")},
-		Urgs: []runtime.Object{runtime.Fstring("This should not override the named argument")},
-	})
-
-	fmt.Println(runtime.MainContext)
+	fmt.Println(f.MainContext)
 }

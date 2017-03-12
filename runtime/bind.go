@@ -17,10 +17,10 @@ type FunctionBinding struct {
 	Want string       // optional arguments
 }
 
-func BindFunction(f FunctionBinding) *Event {
+func BindFunction(o Object, f FunctionBinding) *Event {
 	e := NewEventWithCode(f.Name, f.Code)
 	e.Default.Signature.AddNeedString(f.Need)
 	e.Default.Signature.AddWantString(f.Want)
-	MainContext.Set(f.Name, e)
+	o.Set(f.Name, e)
 	return e
 }
