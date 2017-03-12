@@ -87,7 +87,13 @@ func (sig *Signature) DetailedString() string {
 func stringToEntries(s string, optional bool) []SignatureEntry {
 	parts := strings.Split(s, " ")
 	entries := make([]SignatureEntry, len(parts))
-	for i, part := range parts {
+	j := 0
+	for _, part := range parts {
+
+		// whitespace
+		if len(part) == 0 {
+			continue
+		}
 
 		// must start with $
 		if !strings.HasPrefix(part, "$") {
@@ -113,7 +119,8 @@ func stringToEntries(s string, optional bool) []SignatureEntry {
 			e.Types = strings.Split(nameType[1], "|")
 		}
 
-		entries[i] = e
+		entries[j] = e
+		j++
 	}
-	return entries
+	return entries[:j]
 }

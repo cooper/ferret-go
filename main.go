@@ -21,20 +21,18 @@ func main() {
 	runtime.MainContext.Set("fals", false)
 	runtime.MainContext.Weaken("weakObject")
 
-	sayFunc := runtime.NewFunction("say", say)
-	sayFunc.Signature.AddArgument(runtime.SignatureEntry{
-		Name:  "message",
-		Types: []string{"Str"},
+	runtime.BindFunction(runtime.FunctionBinding{
+		Name: "say",
+		Code: func(c runtime.Call) {
+			fmt.Println(c.Args["message"])
+		},
+		Need: "$message",
 	})
-	runtime.MainContext.Set("say", sayFunc)
-	sayFunc.Call(runtime.Call{
+
+	runtime.MainContext.Get("say").Call(runtime.Call{
 		Args: map[string]runtime.Object{"message": runtime.Fstring("Hello World!")},
 		Urgs: []runtime.Object{runtime.Fstring("This should not override the named argument")},
 	})
 
 	fmt.Println(runtime.MainContext)
-}
-
-func say(c runtime.Call) {
-	fmt.Println(c.Args["message"])
 }

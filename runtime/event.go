@@ -21,6 +21,26 @@ func NewEventWithCode(name string, code FunctionCode) *Event {
 	return NewEvent(name, defaultFunc)
 }
 
+// FIXME: this is fine for now
+func (e *Event) Call(c Call) Object {
+	return e.Default.Call(c)
+}
+
 func (e *Event) Signature() *Signature {
 	return e.Default.Signature
+}
+
+func (e *Event) Description(d *DescriptionOption) string {
+	s := "Event"
+	if e.Name != "" {
+		s += " '" + e.Name + "'"
+	}
+	if sig := e.Signature().DetailedString(); sig != "" {
+		s += " { " + sig + " }"
+	}
+	return s
+}
+
+func (e *Event) String() string {
+	return e.Description(nil)
 }
