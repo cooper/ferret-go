@@ -3,7 +3,7 @@ package runtime
 type Function struct {
 	Name      string
 	Code      FunctionCode
-	Signature Signature
+	Signature *Signature
 	*genericObject
 }
 
@@ -22,7 +22,7 @@ type Call struct {
 }
 
 func NewFunction(name string, code FunctionCode) *Function {
-	return &Function{name, code, Signature{}, objectBase()}
+	return &Function{name, code, new(Signature), objectBase()}
 }
 
 func (f *Function) Call(c Call) Object {
@@ -56,20 +56,12 @@ func (f *Function) verifyArguments(c *Call) {
 
 }
 
-func (f *Function) SignatureString() string {
-	return ""
-}
-
-func (f *Function) DetailedSignatureString() string {
-	return ""
-}
-
 func (f *Function) Description(d *DescriptionOption) string {
 	s := "Function"
 	if f.Name != "" {
 		s += " '" + f.Name + "'"
 	}
-	if sig := f.DetailedSignatureString(); sig != "" {
+	if sig := f.Signature.DetailedString(); sig != "" {
 		s += " { " + sig + " }"
 	}
 	return s

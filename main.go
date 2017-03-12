@@ -22,6 +22,10 @@ func main() {
 	runtime.MainContext.Weaken("weakObject")
 
 	sayFunc := runtime.NewFunction("say", say)
+	sayFunc.Signature.AddArgument(runtime.SignatureEntry{
+		Name:  "message",
+		Types: []string{"Str"},
+	})
 	runtime.MainContext.Set("say", sayFunc)
 	sayFunc.Call(runtime.Call{
 		Urgs: []runtime.Object{runtime.Fstring("Hello World!")},
