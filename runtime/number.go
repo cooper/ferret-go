@@ -16,10 +16,10 @@ func (n *Number) AsFloat() float64 {
 	return float64(n.IntValue)
 }
 
-func (n *Number) Description(d *DescriptionOption) string {
-	return fmt.Sprintf("%v", n.AsFloat())
+func (n *Number) Object() Object {
+	return n
 }
 
-func (n *Number) String() string {
-	return n.Description(nil)
+func (n *Number) Description(d *DescriptionOption) string {
+	return fmt.Sprintf("%v", n.AsFloat())
 }

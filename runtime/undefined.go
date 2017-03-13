@@ -121,6 +121,17 @@ func (u UndefinedObject) Call(c Call) Object {
 	return nil
 }
 
+func (u UndefinedObject) SetLastParent(p Object) {
+}
+
+func (u UndefinedObject) GetLastParent() Object {
+	return nil
+}
+
+func (u UndefinedObject) Object() Object {
+	return u
+}
+
 func (u UndefinedObject) Description(d *DescriptionOption) string {
 	return "undefined"
 }

@@ -84,6 +84,6 @@ func (c *Class) Description(d *DescriptionOption) string {
 	return s
 }
 
-func (c *Class) String() string {
-	return c.Description(nil)
+func (c *Class) Object() Object {
+	return c
 }

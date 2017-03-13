@@ -117,10 +117,21 @@ func (b Boolean) HasParent(p Object) bool {
 	return false
 }
 
+func (b Boolean) SetLastParent(p Object) {
+}
+
+func (b Boolean) GetLastParent() Object {
+	return nil
+}
+
 // call the object with the given call info, returning an object
 func (b Boolean) Call(c Call) Object {
 	panic("attempted to call boolean")
 	return nil
+}
+
+func (b Boolean) Object() Object {
+	return b
 }
 
 func (b Boolean) Description(d *DescriptionOption) string {

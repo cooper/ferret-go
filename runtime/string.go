@@ -29,15 +29,16 @@ func (s *String) Len() int {
 	return len(s.Value)
 }
 
+func (s *String) Object() Object {
+	return s
+}
+
 func (s *String) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("%#v", s.Value)
 }
 
-func (s *String) String() string {
-	return s.Value
-}
-
 func _string_length(c Call) {
+	fmt.Println("V: ", c.Self)
 	s := c.Self.(*String)
 	c.Ret.Override(Fnum(s.Len()))
 }

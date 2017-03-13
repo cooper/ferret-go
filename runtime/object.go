@@ -73,9 +73,16 @@ type Object interface {
 	// call the object with the given call info, returning an object
 	Call(c Call) Object
 
+	// set and fetch the object's most recent parent
+	GetLastParent() Object
+	SetLastParent(p Object)
+
 	// return a string description of the object
 	Description(d *DescriptionOption) string
 	String() string
+
+	// returns the object itself
+	Object() Object
 }
 
 // a value which can be stored as a property
@@ -111,14 +118,15 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 }
 
 type Code interface {
+	SetLastParent(p Object)
 	Signature() *Signature
 	Call(c Call) Object
 }
 
 // a PropertyValue representing a computed property
 type ComputedProperty struct {
-	function Code // function or event
-	lazy     bool // set the value after first evaluation
+	code Code // function or event
+	lazy bool // set the value after first evaluation
 }
 
 // a PropertyValue representing a lazy-evaluated value.

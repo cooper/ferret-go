@@ -24,6 +24,6 @@ func (r *Return) Description(d *DescriptionOption) string {
 	return "[ Return ] " + r.genericObject.Description(d)
 }
 
-func (r *Return) String() string {
-	return r.Description(nil)
+func (r *Return) Object() Object {
+	return r
 }

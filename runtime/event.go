@@ -23,6 +23,7 @@ func NewEventWithCode(name string, code FunctionCode) *Event {
 
 // FIXME: this is fine for now
 func (e *Event) Call(c Call) Object {
+	c.Self = e.GetLastParent()
 	return e.Default.Call(c)
 }
 
@@ -44,6 +45,6 @@ func (e *Event) Description(d *DescriptionOption) string {
 	return s
 }
 
-func (e *Event) String() string {
-	return e.Description(nil)
+func (e *Event) Object() Object {
+	return e
 }

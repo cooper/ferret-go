@@ -8,6 +8,7 @@ import (
 type genericObject struct {
 	properties map[string]PropertyValue
 	isa        []Object
+	lastParent Object
 }
 
 func NewObject() Object {
@@ -18,13 +19,14 @@ func objectBase() *genericObject {
 	return &genericObject{
 		make(map[string]PropertyValue),
 		make([]Object, 0),
+		nil,
 	}
 }
 
 // fetch a property and its owner. if this is a computed property
 // or lazy-evaluated value, it is NOT evaluated
-func (obj *genericObject) Property(name string) (Object, PropertyValue) {
-	owners := append([]Object{obj}, obj.isa...)
+func (gobj *genericObject) Property(name string) (Object, PropertyValue) {
+	owners := append([]Object{gobj.Object()}, gobj.isa...)
 	for _, owner := range owners {
 		if val := owner.PropertyOwn(name); val != nil {
 			return owner, val
@@ -34,28 +36,31 @@ func (obj *genericObject) Property(name string) (Object, PropertyValue) {
 }
 
 // fetch the object's own property
-func (obj *genericObject) PropertyOwn(name string) PropertyValue {
-	return obj.properties[name]
+func (gobj *genericObject) PropertyOwn(name string) PropertyValue {
+	return gobj.properties[name]
 }
 
 // fetch a property and its owner, always yielding an Object by
 // evaluating computed properties
-func (obj *genericObject) PropertyComputed(name string) (Object, Object) {
+func (gobj *genericObject) PropertyComputed(name string) (Object, Object) {
+	obj := gobj.Object()
 	owner, val := obj.Property(name)
 	return owner, computed(name, val, obj, owner)
 }
 
 // fetch the object's own property, always yielding an Object by
 // evaluating computed properties
-func (obj *genericObject) PropertyOwnComputed(name string) Object {
+func (gobj *genericObject) PropertyOwnComputed(name string) Object {
+	obj := gobj.Object()
 	val := obj.PropertyOwn(name)
 	return computed(name, val, obj, obj)
 }
 
 // all properties
-func (obj *genericObject) Properties() []string {
+func (gobj *genericObject) Properties() []string {
+	obj := gobj.Object()
 	props := obj.PropertiesOwn()
-	for _, parent := range obj.isa {
+	for _, parent := range gobj.isa {
 		props = append(props, parent.PropertiesOwn()...)
 	}
 	seen := make(map[string]bool, len(props))
@@ -73,10 +78,10 @@ func (obj *genericObject) Properties() []string {
 }
 
 // own properties
-func (obj *genericObject) PropertiesOwn() []string {
-	props := make([]string, len(obj.properties))
+func (gobj *genericObject) PropertiesOwn() []string {
+	props := make([]string, len(gobj.properties))
 	i := 0
-	for name := range obj.properties {
+	for name := range gobj.properties {
 		props[i] = name
 		i++
 	}
@@ -84,25 +89,29 @@ func (obj *genericObject) PropertiesOwn() []string {
 }
 
 // true if the object has a property by the given name
-func (obj *genericObject) Has(name string) bool {
+func (gobj *genericObject) Has(name string) bool {
+	obj := gobj.Object()
 	_, val := obj.Property(name)
 	return val != nil
 }
 
 // true if the object has its own property by the given name
-func (obj *genericObject) HasOwn(name string) bool {
+func (gobj *genericObject) HasOwn(name string) bool {
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	return owner == obj
 }
 
 // fetch and evaluate the property by the given name
-func (obj *genericObject) Get(name string) Object {
+func (gobj *genericObject) Get(name string) Object {
+	obj := gobj.Object()
 	_, val := obj.PropertyComputed(name)
 	return val
 }
 
 // fetch and evaluate the object's own property by the given name
-func (obj *genericObject) GetOwn(name string) Object {
+func (gobj *genericObject) GetOwn(name string) Object {
+	obj := gobj.Object()
 	owner, val := obj.Property(name)
 	if owner != obj {
 		return nil
@@ -111,14 +120,15 @@ func (obj *genericObject) GetOwn(name string) Object {
 }
 
 // write the given value to the property by the given name
-func (obj *genericObject) Set(name string, value PropertyValue) {
+func (gobj *genericObject) Set(name string, value PropertyValue) {
 	value = verifyPropertyValue(value)
-	obj.properties[name] = value
+	gobj.properties[name] = value
 }
 
 // write the given value to the proprerty by the given name, overwriting an
 // existing value on a parent object
-func (obj *genericObject) SetOverwrite(name string, value PropertyValue) {
+func (gobj *genericObject) SetOverwrite(name string, value PropertyValue) {
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	if owner != nil {
 		owner.Set(name, value)
@@ -126,12 +136,13 @@ func (obj *genericObject) SetOverwrite(name string, value PropertyValue) {
 }
 
 // delete the property by the given name
-func (obj *genericObject) Delete(name string) {
-	delete(obj.properties, name)
+func (gobj *genericObject) Delete(name string) {
+	delete(gobj.properties, name)
 }
 
 // delete the property by the given name, even if it is inherited
-func (obj *genericObject) DeleteOverwrite(name string) {
+func (gobj *genericObject) DeleteOverwrite(name string) {
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	if owner == nil {
 		return
@@ -140,7 +151,8 @@ func (obj *genericObject) DeleteOverwrite(name string) {
 }
 
 // weaken the property by the given name
-func (obj *genericObject) Weaken(name string) {
+func (gobj *genericObject) Weaken(name string) {
+	obj := gobj.Object()
 	val := obj.PropertyOwn(name)
 	if val == nil {
 		return
@@ -150,7 +162,8 @@ func (obj *genericObject) Weaken(name string) {
 }
 
 // weaken the property by the given name, even if it is inherited
-func (obj *genericObject) WeakenOverwrite(name string) {
+func (gobj *genericObject) WeakenOverwrite(name string) {
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	if owner == nil {
 		return
@@ -159,44 +172,53 @@ func (obj *genericObject) WeakenOverwrite(name string) {
 }
 
 // fetch and evaluate the value at the given index
-func (obj *genericObject) GetIndex(index Object) Object {
+func (gobj *genericObject) GetIndex(index Object) Object {
 	panic("unimplemented")
 	return nil
 }
 
 // set the value at the given index
-func (obj *genericObject) SetIndex(index Object, value Object) {
+func (gobj *genericObject) SetIndex(index Object, value Object) {
 	panic("unimplemented")
 }
 
-func (obj *genericObject) Parents() []Object {
-	return obj.isa
+func (gobj *genericObject) Parents() []Object {
+	return gobj.isa
 }
 
-func (obj *genericObject) AddParent(p Object) {
+func (gobj *genericObject) AddParent(p Object) {
 	if p == nil {
 		return
 	}
-	obj.isa = append(obj.isa, p)
+	gobj.isa = append(gobj.isa, p)
 }
 
-func (obj *genericObject) RemoveParent(p Object) {
+func (gobj *genericObject) RemoveParent(p Object) {
 	panic("unimplemented")
 }
 
-func (obj *genericObject) HasParent(p Object) bool {
+func (gobj *genericObject) HasParent(p Object) bool {
 	panic("unimplemented")
 	return false
 }
 
 // call the object with the given call info, returning an object
-func (obj *genericObject) Call(c Call) Object {
+func (gobj *genericObject) Call(c Call) Object {
 	panic("unimplemented")
 	return nil
 }
 
+func (gobj *genericObject) GetLastParent() Object {
+	return gobj.lastParent
+}
+
+func (gobj *genericObject) SetLastParent(p Object) {
+	gobj.lastParent = p
+}
+
 // return a string description of the object
-func (obj *genericObject) Description(d *DescriptionOption) string {
+func (gobj *genericObject) Description(d *DescriptionOption) string {
+	obj := gobj.Object()
 
 	// initial options
 	if d == nil {
@@ -226,8 +248,12 @@ func (obj *genericObject) Description(d *DescriptionOption) string {
 	return s
 }
 
-func (obj *genericObject) String() string {
-	return obj.Description(nil)
+func (gobj *genericObject) String() string {
+	return gobj.Object().Description(nil)
+}
+
+func (gobj *genericObject) Object() Object {
+	return gobj
 }
 
 func valueStr(value PropertyValue, d *DescriptionOption) string {
@@ -255,16 +281,17 @@ func computed(name string, val PropertyValue, obj Object, owner Object) Object {
 	case nil:
 		return nil
 	case Object:
+		v.SetLastParent(obj)
 		return v
 	case ComputedProperty:
-		c := Call{} // TODO
-		o := v.function.Call(c)
+		v.code.SetLastParent(obj)
+		o := v.code.Call(Call{})
 		if v.lazy {
 			owner.Set(name, o)
 		}
-		return o
+		return computed(name, o, obj, owner)
 	case LazyEvaluatedValue:
-		return v(obj, owner)
+		return computed(name, v(obj, owner), obj, owner)
 	case *weakref.WeakRef:
 		if p := v.Get(); p != nil {
 			return computed(name, p, obj, owner)

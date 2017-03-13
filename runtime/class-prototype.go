@@ -8,3 +8,7 @@ type Prototype struct {
 func NewPrototype(name string) *Prototype {
 	return &Prototype{name, objectBase()}
 }
+
+func (p *Prototype) Object() Object {
+	return p
+}

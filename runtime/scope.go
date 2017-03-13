@@ -31,10 +31,10 @@ func (s *Scope) With(propNames ...string) *Scope {
 	return newScope
 }
 
-func (s *Scope) Description(d *DescriptionOption) string {
-	return "[ Scope ] " + s.genericObject.Description(d)
+func (s *Scope) Object() Object {
+	return s
 }
 
-func (s *Scope) String() string {
-	return s.Description(nil)
+func (s *Scope) Description(d *DescriptionOption) string {
+	return "[ Scope ] " + s.genericObject.Description(d)
 }

@@ -94,6 +94,10 @@ func (f *Function) Signature() *Signature {
 	return f.signature
 }
 
+func (f *Function) Object() Object {
+	return f
+}
+
 func (f *Function) Description(d *DescriptionOption) string {
 	s := "Function"
 	if f.Name != "" {
@@ -103,8 +107,4 @@ func (f *Function) Description(d *DescriptionOption) string {
 		s += " { " + sig + " }"
 	}
 	return s
-}
-
-func (f *Function) String() string {
-	return f.Description(nil)
 }
