@@ -1,5 +1,7 @@
 package runtime
 
+import "fmt"
+
 type Prototype struct {
 	Name string
 	*genericObject
@@ -11,4 +13,8 @@ func NewPrototype(name string) *Prototype {
 
 func (p *Prototype) Object() Object {
 	return p
+}
+
+func (p *Prototype) Description(d *DescriptionOption) string {
+	return fmt.Sprintf("[ Prototype '%s' ] %s", p.Name, p.genericObject.Description(d))
 }

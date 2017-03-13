@@ -90,13 +90,16 @@ type PropertyValue interface{}
 
 // called in Set methods to verify that a property is valid
 func verifyPropertyValue(v PropertyValue) PropertyValue {
-	switch v.(type) {
+	switch v := v.(type) {
 
 	// nothing
 	case nil:
 
-	// normal property values
+	// object
 	case Object:
+		return v.Object()
+
+	// other normal property values
 	case LazyEvaluatedValue:
 	case ComputedProperty:
 	case *weakref.WeakRef:
