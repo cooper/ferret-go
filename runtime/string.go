@@ -37,8 +37,12 @@ func (s *String) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("%#v", s.Value)
 }
 
+
+func (s *String) String() string {
+	return s.Description(nil)
+}
+
 func _string_length(c Call) {
-	fmt.Println("V: ", c.Self)
 	s := c.Self.(*String)
 	c.Ret.Override(Fnum(s.Len()))
 }
