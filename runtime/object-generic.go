@@ -144,7 +144,15 @@ func (gobj *genericObject) SetOverwrite(name string, value PropertyValue) {
 
 // delete the property by the given name
 func (gobj *genericObject) Delete(name string) {
+	
+	// decrease the value only if it is not weak
+	if val, ok := gobj.properties[name]; ok && !gobj.weakProperties[name] {
+		decrease(val)
+	}
+	
+	// delete
 	delete(gobj.properties, name)
+	delete(gobj.weakProperties, name)
 }
 
 // delete the property by the given name, even if it is inherited
