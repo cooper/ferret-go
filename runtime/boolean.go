@@ -140,3 +140,7 @@ func (b Boolean) Description(d *DescriptionOption) string {
 func (b Boolean) String() string {
 	return b.Description(nil)
 }
+
+func (b Boolean) Object() Object {
+	return b
+}

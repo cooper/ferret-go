@@ -139,3 +139,7 @@ func (u UndefinedObject) String() string {
 func IsUndefined(o Object) bool {
 	return o == Undefined
 }
+
+func (u UndefinedObject) Object() Object {
+	return u
+}
