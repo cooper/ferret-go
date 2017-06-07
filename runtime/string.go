@@ -21,6 +21,7 @@ type String struct {
 
 func NewString(s string) *String {
 	str := &String{s, objectBase()}
+	associate(str.genericObject, str)
 	str.AddParent(stringPrototype)
 	return str
 }
@@ -42,6 +43,6 @@ func (s *String) String() string {
 }
 
 func _string_length(c Call) {
-	s := c.Self.(*String)
-	c.Ret.Override(Fnum(s.Len()))
+	s := getAssociation(c.Self).(*String)
+	// c.Ret.Override(Fnum(s.Len()))
 }

@@ -27,7 +27,7 @@ func objectBase() *genericObject {
 // fetch a property and its owner. if this is a computed property
 // or lazy-evaluated value, it is NOT evaluated
 func (gobj *genericObject) Property(name string) (Object, PropertyValue) {
-	owners := append([]Object{gobj.Object()}, gobj.isa...)
+	owners := append([]Object{getAssociation(gobj)}, gobj.isa...)
 	for _, owner := range owners {
 		if val := owner.PropertyOwn(name); val != nil {
 			return owner, val
@@ -281,7 +281,7 @@ func (gobj *genericObject) Description(d *DescriptionOption) string {
 }
 
 func (gobj *genericObject) String() string {
-	return gobj.Object().Description(nil)
+	return getAssociation(gobj).Description(nil)
 }
 
 func (gobj *genericObject) Object() Object {
@@ -306,12 +306,12 @@ func valueStr(value PropertyValue, d *DescriptionOption) string {
 	}
 }
 
-func computed(name string, val PropertyValue, obj Object, owner Object) Object {
+func computed(name string, val PropertyValue, obj, owner Object) Object {
 	switch v := val.(type) {
 	case nil:
 		return nil
 	case Object:
-		v.Object().SetLastParent(obj.Object())
+		getAssociation(v).SetLastParent(getAssociation(obj))
 		return v
 	case ComputedProperty:
 		v.code.SetLastParent(obj)

@@ -95,7 +95,7 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 
 	// object
 	case Object:
-		return v.Object()
+		return getAssociation(v)
 
 	// other normal property values
 	case LazyEvaluatedValue:
