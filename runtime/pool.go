@@ -7,12 +7,12 @@ var currentIdentifier uint
 
 func increase(value PropertyValue) uint {
 	id, ok := identifiersByValue[value]
-    if !ok {
-        id = currentIdentifier
-        currentIdentifier++
-        valuesByIdentifier[id] = value
-        identifiersByValue[value] = id
-    }
+	if !ok {
+		id = currentIdentifier
+		currentIdentifier++
+		valuesByIdentifier[id] = value
+		identifiersByValue[value] = id
+	}
 	refcount[id]++
 	return id
 }
@@ -32,8 +32,8 @@ func decrease(value PropertyValue) bool {
 
 func retrieve(id uint) PropertyValue {
 	val, ok := valuesByIdentifier[id]
-    if !ok {
-        return nil
-    }
-    return val
+	if !ok {
+		return nil
+	}
+	return val
 }

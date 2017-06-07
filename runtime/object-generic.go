@@ -5,9 +5,10 @@ import (
 )
 
 type genericObject struct {
-	properties map[string]uint
-	isa        []Object
-	lastParent Object
+	properties     map[string]uint
+	weakProperties map[string]bool
+	isa            []Object
+	lastParent     Object
 }
 
 func NewObject() Object {
@@ -17,6 +18,7 @@ func NewObject() Object {
 func objectBase() *genericObject {
 	return &genericObject{
 		make(map[string]uint),
+		make(map[string]bool),
 		make([]Object, 0),
 		nil,
 	}
@@ -159,11 +161,15 @@ func (gobj *genericObject) DeleteOverwrite(name string) {
 func (gobj *genericObject) Weaken(name string) {
 	obj := gobj
 	val := obj.PropertyOwn(name)
-	if val == nil {
+
+	// already weak
+	if gobj.weakProperties[name] {
 		return
 	}
+
+	// weaken
+	gobj.weakProperties[name] = true
 	decrease(val)
-	// TODO: store it is weak
 }
 
 // weaken the property by the given name, even if it is inherited

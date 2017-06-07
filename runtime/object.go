@@ -1,7 +1,5 @@
 package runtime
 
-import "../weakref"
-
 type Object interface {
 
 	// PROPERTIES
@@ -102,7 +100,6 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 	// other normal property values
 	case LazyEvaluatedValue:
 	case ComputedProperty:
-	case *weakref.WeakRef:
 
 	// conversion from go builtin types
 	case string:
