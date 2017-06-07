@@ -126,9 +126,22 @@ func (gobj *genericObject) GetOwn(name string) Object {
 // write the given value to the property by the given name
 func (gobj *genericObject) Set(name string, value PropertyValue) {
 	value = verifyPropertyValue(value)
-	if value == gobj.PropertyOwn(name) {
-		return
+	
+	// check for old
+	if existing, ok := gobj.properties[name]; ok {
+		
+		// unchanged
+		if value == existing {
+			return
+		}
+		
+		// some other value is there
+		if !gobj.weakProperties[name] {
+			decrease(existing)
+		}
 	}
+
+	// set new
 	gobj.properties[name] = increase(value)
 }
 
