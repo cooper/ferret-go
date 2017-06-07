@@ -37,7 +37,6 @@ func (s *String) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("%#v", s.Value)
 }
 
-
 func (s *String) String() string {
 	return s.Description(nil)
 }

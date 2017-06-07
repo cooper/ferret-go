@@ -2,11 +2,10 @@ package runtime
 
 import (
 	"../utils"
-	"../weakref"
 )
 
 type genericObject struct {
-	properties map[string]PropertyValue
+	properties map[string]uint
 	isa        []Object
 	lastParent Object
 }
@@ -17,7 +16,7 @@ func NewObject() Object {
 
 func objectBase() *genericObject {
 	return &genericObject{
-		make(map[string]PropertyValue),
+		make(map[string]uint),
 		make([]Object, 0),
 		nil,
 	}
@@ -37,7 +36,10 @@ func (gobj *genericObject) Property(name string) (Object, PropertyValue) {
 
 // fetch the object's own property
 func (gobj *genericObject) PropertyOwn(name string) PropertyValue {
-	return gobj.properties[name]
+	if id, ok := gobj.properties[name]; ok {
+		return retrieve(id)
+	}
+	return nil
 }
 
 // fetch a property and its owner, always yielding an Object by
@@ -122,7 +124,10 @@ func (gobj *genericObject) GetOwn(name string) Object {
 // write the given value to the property by the given name
 func (gobj *genericObject) Set(name string, value PropertyValue) {
 	value = verifyPropertyValue(value)
-	gobj.properties[name] = value
+	if value == gobj.PropertyOwn(name) {
+		return
+	}
+	gobj.properties[name] = increase(value)
 }
 
 // write the given value to the proprerty by the given name, overwriting an
@@ -157,8 +162,8 @@ func (gobj *genericObject) Weaken(name string) {
 	if val == nil {
 		return
 	}
-	wr := weakref.NewWeakRef(val)
-	obj.Set(name, wr)
+	decrease(val)
+	// TODO: store it is weak
 }
 
 // weaken the property by the given name, even if it is inherited
@@ -269,8 +274,6 @@ func valueStr(value PropertyValue, d *DescriptionOption) string {
 		}
 	case LazyEvaluatedValue, ComputedProperty:
 		return "(computed)"
-	case *weakref.WeakRef:
-		return valueStr(v.Get(), d)
 	default:
 		return "(unknown)"
 	}
@@ -292,11 +295,6 @@ func computed(name string, val PropertyValue, obj Object, owner Object) Object {
 		return computed(name, o, obj, owner)
 	case LazyEvaluatedValue:
 		return computed(name, v(obj, owner), obj, owner)
-	case *weakref.WeakRef:
-		if p := v.Get(); p != nil {
-			return computed(name, p, obj, owner)
-		}
-		return nil
 	default:
 		return nil
 	}
