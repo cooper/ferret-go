@@ -11,10 +11,6 @@ func NewPrototype(name string) *Prototype {
 	return &Prototype{name, objectBase()}
 }
 
-func (p *Prototype) Object() Object {
-	return p
-}
-
 func (p *Prototype) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("[ Prototype '%s' ] %s", p.Name, p.genericObject.Description(d))
 }

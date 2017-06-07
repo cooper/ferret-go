@@ -130,10 +130,6 @@ func (b Boolean) Call(c Call) Object {
 	return nil
 }
 
-func (b Boolean) Object() Object {
-	return b
-}
-
 func (b Boolean) Description(d *DescriptionOption) string {
 	if b {
 		return "true"

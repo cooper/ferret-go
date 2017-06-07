@@ -44,7 +44,3 @@ func (e *Event) Description(d *DescriptionOption) string {
 	}
 	return s
 }
-
-func (e *Event) Object() Object {
-	return e
-}

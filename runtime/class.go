@@ -83,7 +83,3 @@ func (c *Class) Description(d *DescriptionOption) string {
 	}
 	return s
 }
-
-func (c *Class) Object() Object {
-	return c
-}
