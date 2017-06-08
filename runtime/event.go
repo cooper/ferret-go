@@ -8,12 +8,14 @@ type Event struct {
 }
 
 func NewEvent(name string, defaultFunc *Function) *Event {
-	return &Event{
+	e := &Event{
 		name,
 		defaultFunc,
 		[]*Function{defaultFunc},
 		objectBase(),
 	}
+	e.genericObject.object = e
+	return e
 }
 
 func NewEventWithCode(name string, code FunctionCode) *Event {
@@ -29,7 +31,7 @@ func (e *Event) Call(c Call) Object {
 
 func (e *Event) Signature() *Signature {
 	if e.Default == nil {
-		return &Signature{}
+		return new(Signature)
 	}
 	return e.Default.signature
 }

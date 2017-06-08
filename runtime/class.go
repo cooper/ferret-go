@@ -1,5 +1,8 @@
 package runtime
 
+import "log"
+import "reflect"
+
 type Class struct {
 	Name    string
 	Version float32
@@ -12,6 +15,7 @@ var classPrototype = NewPrototype("Class") // TODO
 func NewClass(opts Class, proto *Prototype) *Class {
 	c := &opts
 	c.genericObject = objectBase()
+	c.genericObject.object = c
 
 	// make the class inherit from the global class prototype
 	c.AddParent(classPrototype)
@@ -30,10 +34,19 @@ func NewClass(opts Class, proto *Prototype) *Class {
 }
 
 func (c *Class) Proto() *Prototype {
-	if p, ok := c.Get("proto").(*Prototype); ok {
-		return p
+	switch proto := c.Get("proto").(type) {
+	case *Prototype:
+		return proto
+	case Object:
+		proto = proto.Object()
+		log.Printf("OK %+v", reflect.TypeOf(proto))
+		if p, ok := proto.Object().(*Prototype); ok {
+			return p
+		}
+		return nil
+	default:
+		return nil
 	}
-	return nil
 }
 
 func (c *Class) Initializer() *Event {

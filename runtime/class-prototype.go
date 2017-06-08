@@ -8,7 +8,9 @@ type Prototype struct {
 }
 
 func NewPrototype(name string) *Prototype {
-	return &Prototype{name, objectBase()}
+	p := &Prototype{name, objectBase()}
+	p.genericObject.object = p
+	return p
 }
 
 func (p *Prototype) Description(d *DescriptionOption) string {

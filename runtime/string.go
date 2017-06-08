@@ -1,7 +1,6 @@
 package runtime
 
 import "fmt"
-import "log"
 
 var stringPrototype = NewPrototype("String")
 
@@ -22,17 +21,13 @@ type String struct {
 
 func NewString(s string) *String {
 	str := &String{s, objectBase()}
-	associate(str.genericObject, str)
+	str.genericObject.object = str
 	str.AddParent(stringPrototype)
 	return str
 }
 
 func (s *String) Len() int {
 	return len(s.Value)
-}
-
-func (s *String) Object() Object {
-	return s
 }
 
 func (s *String) Description(d *DescriptionOption) string {
@@ -44,7 +39,6 @@ func (s *String) String() string {
 }
 
 func _string_length(c Call) {
-	log.Printf("%+v", c)
-	s := getAssociation(c.Self).(*String)
+	s := c.Self.(*String)
 	c.Ret.Override(Fnum(s.Len()))
 }

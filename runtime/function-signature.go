@@ -14,6 +14,12 @@ type Signature struct {
 	Returns   []SignatureEntry
 }
 
+// sig := new(Signature).AddString("$need:Type ?$want -> $ret:Type")
+// TODO
+func (sig *Signature) AddString() *Signature {
+	return sig
+}
+
 func (sig *Signature) AddArgument(e SignatureEntry) {
 	sig.Arguments = append(sig.Arguments, e)
 }
@@ -29,7 +35,12 @@ func (sig *Signature) AddWantString(s string) {
 }
 
 func (sig *Signature) AddReturn(e SignatureEntry) {
-	sig.Arguments = append(sig.Arguments, e)
+	sig.Returns = append(sig.Returns, e)
+}
+
+func (sig *Signature) AddReturnString(s string) {
+	entries := stringToEntries(s, false)
+	sig.Returns = append(sig.Returns, entries...)
 }
 
 func (e SignatureEntry) String() string {

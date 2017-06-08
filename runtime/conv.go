@@ -39,29 +39,29 @@ func Fnum(i interface{}) *Number {
 	case *Number:
 		return v
 	case float64:
-		return &Number{FloatValue: v, genericObject: objectBase()}
+		return NewNumberFloat(v)
 	case float32:
-		return &Number{FloatValue: float64(v), genericObject: objectBase()}
+		return NewNumberFloat(float64(v))
 	case int:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case int8:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case int16:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case int32:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case int64:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(v)
 	case uint:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case uint8:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case uint16:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case uint32:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	case uint64:
-		return &Number{IntValue: int64(v), genericObject: objectBase()}
+		return NewNumberInt(int64(v))
 	default:
 		return nil
 	}

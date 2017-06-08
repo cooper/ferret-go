@@ -22,7 +22,9 @@ type Call struct {
 }
 
 func NewFunction(name string, code FunctionCode) *Function {
-	return &Function{name, code, new(Signature), objectBase()}
+	f := &Function{name, code, new(Signature), objectBase()}
+	f.genericObject.object = f
+	return f
 }
 
 func (f *Function) Call(c Call) Object {

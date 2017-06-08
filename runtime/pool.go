@@ -7,7 +7,6 @@ var currentIdentifier uint
 
 func increase(value PropertyValue) uint {
 	id, ok := identifiersByValue[value]
-
 	if !ok {
 		id = currentIdentifier
 		currentIdentifier++
@@ -27,7 +26,6 @@ func decrease(value PropertyValue) bool {
 		delete(refcount, id)
 		return true
 	}
-
 	return false
 }
 
@@ -37,17 +35,4 @@ func retrieve(id uint) PropertyValue {
 		return nil
 	}
 	return val
-}
-
-var associatedObjects = make(map[Object]Object)
-
-func associate(gobj, obj Object) {
-    associatedObjects[gobj] = obj
-}
-
-func getAssociation(gobj Object) Object {
-    if found, ok := associatedObjects[gobj]; ok {
-        return found
-    }
-    return gobj
 }

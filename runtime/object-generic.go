@@ -9,6 +9,7 @@ type genericObject struct {
 	weakProperties map[string]bool
 	isa            []Object
 	lastParent     Object
+	object         Object
 }
 
 func NewObject() Object {
@@ -21,13 +22,14 @@ func objectBase() *genericObject {
 		make(map[string]bool),
 		make([]Object, 0),
 		nil,
+		nil,
 	}
 }
 
 // fetch a property and its owner. if this is a computed property
 // or lazy-evaluated value, it is NOT evaluated
 func (gobj *genericObject) Property(name string) (Object, PropertyValue) {
-	owners := append([]Object{getAssociation(gobj)}, gobj.isa...)
+	owners := append([]Object{gobj.Object()}, gobj.isa...)
 	for _, owner := range owners {
 		if val := owner.PropertyOwn(name); val != nil {
 			return owner, val
@@ -47,7 +49,7 @@ func (gobj *genericObject) PropertyOwn(name string) PropertyValue {
 // fetch a property and its owner, always yielding an Object by
 // evaluating computed properties
 func (gobj *genericObject) PropertyComputed(name string) (Object, Object) {
-	obj := gobj
+	obj := gobj.Object()
 	owner, val := obj.Property(name)
 	return owner, computed(name, val, obj, owner)
 }
@@ -55,14 +57,14 @@ func (gobj *genericObject) PropertyComputed(name string) (Object, Object) {
 // fetch the object's own property, always yielding an Object by
 // evaluating computed properties
 func (gobj *genericObject) PropertyOwnComputed(name string) Object {
-	obj := gobj
+	obj := gobj.Object()
 	val := obj.PropertyOwn(name)
 	return computed(name, val, obj, obj)
 }
 
 // all properties
 func (gobj *genericObject) Properties() []string {
-	obj := gobj
+	obj := gobj.Object()
 	props := obj.PropertiesOwn()
 	for _, parent := range gobj.isa {
 		props = append(props, parent.PropertiesOwn()...)
@@ -94,7 +96,7 @@ func (gobj *genericObject) PropertiesOwn() []string {
 
 // true if the object has a property by the given name
 func (gobj *genericObject) Has(name string) bool {
-	obj := gobj
+	obj := gobj.Object()
 	_, val := obj.Property(name)
 	return val != nil
 }
@@ -108,14 +110,14 @@ func (gobj *genericObject) HasOwn(name string) bool {
 
 // fetch and evaluate the property by the given name
 func (gobj *genericObject) Get(name string) Object {
-	obj := gobj
+	obj := gobj.Object()
 	_, val := obj.PropertyComputed(name)
 	return val
 }
 
 // fetch and evaluate the object's own property by the given name
 func (gobj *genericObject) GetOwn(name string) Object {
-	obj := gobj
+	obj := gobj.Object()
 	owner, val := obj.Property(name)
 	if owner != obj {
 		return nil
@@ -126,15 +128,15 @@ func (gobj *genericObject) GetOwn(name string) Object {
 // write the given value to the property by the given name
 func (gobj *genericObject) Set(name string, value PropertyValue) {
 	value = verifyPropertyValue(value)
-	
+
 	// check for old
 	if existing, ok := gobj.properties[name]; ok {
-		
+
 		// unchanged
 		if value == existing {
 			return
 		}
-		
+
 		// some other value is there
 		if !gobj.weakProperties[name] {
 			decrease(existing)
@@ -148,7 +150,7 @@ func (gobj *genericObject) Set(name string, value PropertyValue) {
 // write the given value to the proprerty by the given name, overwriting an
 // existing value on a parent object
 func (gobj *genericObject) SetOverwrite(name string, value PropertyValue) {
-	obj := gobj
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	if owner != nil {
 		owner.Set(name, value)
@@ -157,12 +159,12 @@ func (gobj *genericObject) SetOverwrite(name string, value PropertyValue) {
 
 // delete the property by the given name
 func (gobj *genericObject) Delete(name string) {
-	
+
 	// decrease the value only if it is not weak
 	if val, ok := gobj.properties[name]; ok && !gobj.weakProperties[name] {
 		decrease(val)
 	}
-	
+
 	// delete
 	delete(gobj.properties, name)
 	delete(gobj.weakProperties, name)
@@ -170,7 +172,7 @@ func (gobj *genericObject) Delete(name string) {
 
 // delete the property by the given name, even if it is inherited
 func (gobj *genericObject) DeleteOverwrite(name string) {
-	obj := gobj
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	if owner == nil {
 		return
@@ -180,7 +182,7 @@ func (gobj *genericObject) DeleteOverwrite(name string) {
 
 // weaken the property by the given name
 func (gobj *genericObject) Weaken(name string) {
-	obj := gobj
+	obj := gobj.Object()
 	val := obj.PropertyOwn(name)
 
 	// already weak
@@ -195,7 +197,7 @@ func (gobj *genericObject) Weaken(name string) {
 
 // weaken the property by the given name, even if it is inherited
 func (gobj *genericObject) WeakenOverwrite(name string) {
-	obj := gobj
+	obj := gobj.Object()
 	owner, _ := obj.Property(name)
 	if owner == nil {
 		return
@@ -250,7 +252,7 @@ func (gobj *genericObject) SetLastParent(p Object) {
 
 // return a string description of the object
 func (gobj *genericObject) Description(d *DescriptionOption) string {
-	obj := gobj
+	obj := gobj.Object()
 
 	// initial options
 	if d == nil {
@@ -281,10 +283,13 @@ func (gobj *genericObject) Description(d *DescriptionOption) string {
 }
 
 func (gobj *genericObject) String() string {
-	return getAssociation(gobj).Description(nil)
+	return gobj.Object().Description(nil)
 }
 
 func (gobj *genericObject) Object() Object {
+	if gobj.object != nil {
+		return gobj.object
+	}
 	return gobj
 }
 
@@ -311,12 +316,12 @@ func computed(name string, val PropertyValue, obj, owner Object) Object {
 	case nil:
 		return nil
 	case Object:
-		v = getAssociation(v)
-		v.SetLastParent(getAssociation(obj))
+		v = v.Object()
+		v.SetLastParent(obj)
 		return v
 	case ComputedProperty:
 		v.code.SetLastParent(obj)
-		o := v.code.Call(Call{})
+		o := v.code.Call(Call{}).Object()
 		if v.lazy {
 			owner.Set(name, o)
 		}

@@ -1,5 +1,7 @@
 package runtime
 
+import "reflect"
+
 type Object interface {
 
 	// PROPERTIES
@@ -95,7 +97,7 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 
 	// object
 	case Object:
-		return getAssociation(v)
+		return v.Object()
 
 	// other normal property values
 	case LazyEvaluatedValue:
@@ -112,7 +114,7 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 		return Fbool(v)
 
 	default:
-		panic("invalid property value")
+		panic("invalid property value of type " + reflect.TypeOf(v).String())
 	}
 	return v
 }
