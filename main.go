@@ -29,8 +29,8 @@ func main() {
 	f.MainContext.Get("say").Call(f.Call{
 		Urgs: []f.Object{f.Fstring("unnamed arg")},
 	})
-	
-	myFunc := f.NewEventWithCode("myFunc", func (c f.Call) {
+
+	myFunc := f.NewEventWithCode("myFunc", func(c f.Call) {
 		fmt.Println("called myFunc!")
 	})
 	f.MainContext.Set("myFunc", myFunc)

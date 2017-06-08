@@ -11,11 +11,10 @@ var numberClass = bindCoreClass(ClassBinding{
 	Aliases:   []string{"Num"},
 	Creator:   func() Object { return NewNumber() },
 	Prototype: numberPrototype,
-	Methods:   []FunctionBinding{
+	Methods: []FunctionBinding{
 		{Name: "ceil", Code: _number_ceil, Prop: true},
 	},
 })
-
 
 type Number struct {
 	IntValue   int64

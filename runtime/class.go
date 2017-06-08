@@ -65,7 +65,7 @@ func (class *Class) Init(obj Object, c Call) *Return {
 	if class.Creator != nil {
 		panic("cannot initialize existing object as type " + class.Name)
 	}
-	
+
 	// TODO: actually initialize
 
 	return c.Ret

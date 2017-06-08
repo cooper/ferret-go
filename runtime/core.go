@@ -23,5 +23,5 @@ func addCoreFunctions(c *Context) *Context {
 }
 
 func _say(c Call) {
-	fmt.Println(c.Args["message"])
+	fmt.Println(Gstring(c.Args["message"]))
 }
