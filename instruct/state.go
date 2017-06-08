@@ -1,6 +1,7 @@
 package instruct
 
-import "github.com/cooper/ferret-go/runtime"
+import r "github.com/cooper/ferret-go/runtime"
 
 type State struct {
+	context *r.Context
 }
