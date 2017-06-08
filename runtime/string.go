@@ -1,6 +1,7 @@
 package runtime
 
 import "fmt"
+import "log"
 
 var stringPrototype = NewPrototype("String")
 
@@ -43,6 +44,7 @@ func (s *String) String() string {
 }
 
 func _string_length(c Call) {
+	log.Printf("%+v", c)
 	s := getAssociation(c.Self).(*String)
-	// c.Ret.Override(Fnum(s.Len()))
+	c.Ret.Override(Fnum(s.Len()))
 }

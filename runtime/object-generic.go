@@ -311,7 +311,8 @@ func computed(name string, val PropertyValue, obj, owner Object) Object {
 	case nil:
 		return nil
 	case Object:
-		getAssociation(v).SetLastParent(getAssociation(obj))
+		v = getAssociation(v)
+		v.SetLastParent(getAssociation(obj))
 		return v
 	case ComputedProperty:
 		v.code.SetLastParent(obj)

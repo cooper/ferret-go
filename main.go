@@ -27,6 +27,7 @@ func main() {
 	})
 
 	f.MainContext.Set("createdString", f.MainContext.Get("String").Call(f.Call{}))
-	f.MainContext.Set("length", f.MainContext.Get("createdString").Get("length"))
+	f.MainContext.Set("myString", "testing")
+	f.MainContext.Set("length", f.MainContext.Get("myString").Get("length"))
 	fmt.Println(f.MainContext.String())
 }
