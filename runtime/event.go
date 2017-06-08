@@ -1,5 +1,7 @@
 package runtime
 
+import "github.com/cooper/ferret-go/utils"
+
 type Event struct {
 	Name      string
 	Default   *Function
@@ -29,9 +31,9 @@ func (e *Event) Call(c Call) Object {
 	return e.Default.Call(c)
 }
 
-func (e *Event) Signature() *Signature {
+func (e *Event) Signature() *utils.Signature {
 	if e.Default == nil {
-		return new(Signature)
+		return new(utils.Signature)
 	}
 	return e.Default.signature
 }

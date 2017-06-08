@@ -17,6 +17,7 @@ func NewContext(name string, parent *Context) *Context {
 		s = NewScope(parent)
 	}
 	c := &Context{name, s}
+	c.genericObject.object = c
 	return c
 }
 

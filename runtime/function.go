@@ -1,9 +1,11 @@
 package runtime
 
+import "github.com/cooper/ferret-go/utils"
+
 type Function struct {
 	Name      string
 	Code      FunctionCode
-	signature *Signature
+	signature *utils.Signature
 	*genericObject
 }
 
@@ -22,7 +24,7 @@ type Call struct {
 }
 
 func NewFunction(name string, code FunctionCode) *Function {
-	f := &Function{name, code, new(Signature), objectBase()}
+	f := &Function{name, code, new(utils.Signature), objectBase()}
 	f.genericObject.object = f
 	return f
 }
@@ -92,7 +94,7 @@ func (f *Function) verifyArguments(c *Call) {
 
 }
 
-func (f *Function) Signature() *Signature {
+func (f *Function) Signature() *utils.Signature {
 	return f.signature
 }
 
