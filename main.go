@@ -1,6 +1,6 @@
 package main
 
-import f "./runtime"
+import f "github.com/cooper/ferret-go/runtime"
 import "fmt"
 
 func main() {

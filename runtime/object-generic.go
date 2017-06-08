@@ -1,8 +1,6 @@
 package runtime
 
-import (
-	"../utils"
-)
+import "github.com/cooper/ferret-go/utils"
 
 type genericObject struct {
 	properties     map[string]uint
