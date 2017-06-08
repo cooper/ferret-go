@@ -1,7 +1,5 @@
 package runtime
 
-import "log"
-
 type ClassBinding struct {
 	Name        string            // class name
 	Version     float32           // version
@@ -25,7 +23,6 @@ type FunctionBinding struct {
 
 func BindFunction(o Object, f FunctionBinding) *Event {
 
-	log.Printf("O(%+v) F(%+v)", o, f)
 	// create event
 	e := NewEventWithCode(f.Name, f.Code)
 
@@ -54,11 +51,6 @@ func BindClass(o Object, c ClassBinding) *Class {
 		Creator: c.Creator,
 	}, c.Prototype)
 
-	log.Printf("proto here: %v", c.Prototype)
-	if c.Prototype == nil {
-		log.Println("it's nil btw")
-	}
-
 	// initializer
 	if c.Initializer.Code != nil {
 		c.Initializer.Name = "initializer__"
@@ -74,8 +66,7 @@ func BindClass(o Object, c ClassBinding) *Class {
 	proto := class.Proto()
 	for _, f := range c.Methods {
 		if proto == nil {
-			log.Printf("class %s has a nil prototype! can't add method %s", class.Name, f.Name)
-			continue
+			panic("class " + c.Name + "has a nil prototype!")
 		}
 		BindFunction(proto, f)
 	}

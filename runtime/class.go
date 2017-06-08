@@ -1,8 +1,5 @@
 package runtime
 
-import "log"
-import "reflect"
-
 type Class struct {
 	Name    string
 	Version float32
@@ -39,7 +36,6 @@ func (c *Class) Proto() *Prototype {
 		return proto
 	case Object:
 		proto = proto.Object()
-		log.Printf("OK %+v", reflect.TypeOf(proto))
 		if p, ok := proto.Object().(*Prototype); ok {
 			return p
 		}
