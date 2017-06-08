@@ -2,6 +2,20 @@ package runtime
 
 // import "reflect"
 import "fmt"
+import "math"
+
+var numberPrototype = NewPrototype("Number")
+
+var numberClass = bindCoreClass(ClassBinding{
+	Name:      "Number",
+	Aliases:   []string{"Num"},
+	Creator:   func() Object { return NewNumber() },
+	Prototype: numberPrototype,
+	Methods:   []FunctionBinding{
+		{Name: "ceil", Code: _number_ceil, Prop: true},
+	},
+})
+
 
 type Number struct {
 	IntValue   int64
@@ -12,6 +26,7 @@ type Number struct {
 func NewNumber() *Number {
 	n := &Number{0, 0, objectBase()}
 	n.genericObject.object = n
+	n.AddParent(numberPrototype)
 	return n
 }
 
@@ -36,4 +51,10 @@ func (n *Number) AsFloat() float64 {
 
 func (n *Number) Description(d *DescriptionOption) string {
 	return fmt.Sprintf("%v", n.AsFloat())
+}
+
+func _number_ceil(c Call) {
+	n := c.Self.(*Number)
+	ceil := math.Ceil(n.AsFloat())
+	c.Ret.Override(Fnum(ceil))
 }

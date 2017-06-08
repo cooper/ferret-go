@@ -6,6 +6,7 @@ type Scope struct {
 
 func NewScope(parent Object) *Scope {
 	s := &Scope{objectBase()}
+	s.genericObject.object = s
 	if parent != nil {
 		s.AddParent(parent)
 	}
@@ -32,5 +33,5 @@ func (s *Scope) With(propNames ...string) *Scope {
 }
 
 func (s *Scope) Description(d *DescriptionOption) string {
-	return "[ Scope ] " + s.genericObject.Description(d)
+	return "[ Scope ]" + s.genericObject.Description(d)
 }

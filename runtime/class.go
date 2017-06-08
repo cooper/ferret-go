@@ -53,10 +53,10 @@ func (c *Class) Initializer() *Event {
 }
 
 func (c *Class) Signature() *Signature {
-	if c.Initializer() == nil {
-		return &Signature{}
+	if init := c.Initializer(); init != nil {
+		return init.Signature()
 	}
-	return c.Initializer().Signature()
+	return new(Signature)
 }
 
 func (class *Class) Init(obj Object, c Call) *Return {
@@ -65,6 +65,8 @@ func (class *Class) Init(obj Object, c Call) *Return {
 	if class.Creator != nil {
 		panic("cannot initialize existing object as type " + class.Name)
 	}
+	
+	// TODO: actually initialize
 
 	return c.Ret
 }
@@ -87,6 +89,7 @@ func (c *Class) Description(d *DescriptionOption) string {
 	if c.Name != "" {
 		s += " '" + c.Name + "'"
 	}
+	// TODO: version
 	if sig := c.Signature().DetailedString(); sig != "" {
 		s += " { " + sig + " }"
 	}

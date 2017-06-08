@@ -26,8 +26,19 @@ func main() {
 		Urgs: []f.Object{f.Fstring("This should not override the named argument")},
 	})
 
+	f.MainContext.Get("say").Call(f.Call{
+		Urgs: []f.Object{f.Fstring("unnamed arg")},
+	})
+	
+	myFunc := f.NewEventWithCode("myFunc", func (c f.Call) {
+		fmt.Println("called myFunc!")
+	})
+	f.MainContext.Set("myFunc", myFunc)
+	f.MainContext.Get("myFunc").Call(f.Call{})
+
 	f.MainContext.Set("createdString", f.MainContext.Get("String").Call(f.Call{}))
 	f.MainContext.Set("myString", "testing")
 	f.MainContext.Set("length", f.MainContext.Get("myString").Get("length"))
+	f.MainContext.Set("ceil73", f.Fnum(7.3).Get("ceil"))
 	fmt.Println(f.MainContext.String())
 }
