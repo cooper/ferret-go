@@ -1,7 +1,5 @@
 package runtime
 
-import "github.com/cooper/ferret-go/utils"
-
 type Class struct {
 	Name    string
 	Version float32
@@ -54,11 +52,11 @@ func (c *Class) Initializer() *Event {
 	return nil
 }
 
-func (c *Class) Signature() *utils.Signature {
+func (c *Class) Signature() *Signature {
 	if init := c.Initializer(); init != nil {
 		return init.Signature()
 	}
-	return new(utils.Signature)
+	return new(Signature)
 }
 
 func (class *Class) Init(obj Object, c Call) *Return {

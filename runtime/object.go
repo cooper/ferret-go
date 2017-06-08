@@ -1,7 +1,6 @@
 package runtime
 
 import "reflect"
-import "github.com/cooper/ferret-go/utils"
 
 type Object interface {
 
@@ -122,7 +121,7 @@ func verifyPropertyValue(v PropertyValue) PropertyValue {
 
 type Code interface {
 	SetLastParent(p Object)
-	Signature() *utils.Signature
+	Signature() *Signature
 	Call(c Call) Object
 }
 
